@@ -1,23 +1,40 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import dataReducer from '../reducers/dataReducer'
-import {setCompaniesData} from '../actions/dataActions'
+import {getJobsData,startJobApply} from '../actions/dataActions'
 import {connect} from 'react-redux'
-
-import {List, ListItem} from 'material-ui/List';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import Subheader from 'material-ui/Subheader';
-import Toggle from 'material-ui/Toggle';
+// import '../Student.css';
+import FlatButton from 'material-ui/FlatButton';
+import {List, ListItem,Toggle,Subheader, Dialog} from 'material-ui';
+import ActionInfo from 'material-ui/svg-icons/action/info';
+import Admin from './Admin';
 
 class Student extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            open:false
+            open:false,
+            studentUid:'',
+            job:'',
+            companyUid:'',
+            jobPushKey:'',
+            createdAt:''
         }
+    }
+    componentWillMount(){
+        {this.props.getJobsData({
+            stu:"From Student retrieve jobs Dispatch"
+        })}
+        
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.setState({ 
+                    studentUid: user.uid
+                 });
+            } else {
+                this.setState({ studentUid:''});
+            }
+        });
     }
     handleToggle = () => {
         this.setState({
@@ -30,72 +47,107 @@ class Student extends React.Component{
           open: item.state.open,
         });
       };
+            sendJob(job){
+            this.setState({
+                job: job,
+                open:true
+            })
+         }
+      handleClose = () => {
+        this.setState({open: false});
+      };
+      jobApply = (props)=>{
+          this.props.jobs.map((job,index)=>{
+              if(job===this.state.job){
+            console.log("companyUid : ",job.uid)
+            console.log("jobPushKey : ",job.dataPushKey)
+                  this.setState({
+                    companyUid:job.uid,
+                    jobPushKey:job.dataPushKey,
+                    createdAt:job.createdAt,
+                    open:false,
+                  })
+                  console.log("companyUid : ",this.state.companyUid)
+                  setTimeout(() => {
+                    if(this.state.companyUid){
+                        this.applyDispatch()
+                    }
+                }, 500)
+                  
+                }
+            })      
+      }
+      applyDispatch(){
+        this.props.startJobApply({
+            companyUid:this.state.companyUid,
+            jobPushKey:this.state.jobPushKey,
+            studentUid:this.state.studentUid,
+            createdAt:this.state.createdAt
+        })
+      }
     render(){
-        
+        const actions = [
+            <FlatButton
+              label="Cancel"
+              primary={true}
+              onClick={this.handleClose}
+            />,
+            <FlatButton
+              label="Apply"
+              primary={true}
+              keyboardFocused={true}
+              onClick={() =>this.jobApply()}
+            />,
+          ];
         return (
             <div >
-                {this.props.company.map((comp,index)=>{
-                    return(
-                        <ListItem
-                            key={1}
-                            
-                            primaryText={comp.createdAt}
-                            />
-                    )
-                })
-                }
-                <br /><br /><br />
                 <h1 style={{textAlign:"center"}}>Welcome Student</h1>
-                {console.log(this.props.company)}
-            <div>
-                <List>
-                    <Subheader>Companies List</Subheader>
-                    {this.props.company.map((comp,index)=>{
-                        return (
-                   <ListItem key={index}
-                        primaryText={comp.fullName}
-                        initiallyOpen={false}
-                        primaryTogglesNestedList={true}
-                        nestedItems={[
-                            <ListItem
-                            key={1}
-                            
-                            primaryText="20 feb"
-                            />,
-                            <ListItem
-                            key={2}
-                            primaryText="Address"
-                            disabled={true}
-                            
-                            />,
-                            <ListItem
-                            key={3}
-                            primaryText="Apply"
-                            />,
-                         ]}
-                    />
-                        )
-                    })}
-                    
-                </List>
-            </div>
-
                 
-                {this.props.setCompaniesData({
-                    stu:"From Student Dispatch"
-                })}
+                <div>
+                    <List>
+                        <Subheader>Jobs Posted</Subheader>
+                        {(this.props.jobs)?this.props.jobs.map((job,index)=>{
+                            
+                            return (
+                                    <ListItem key={index}
+                                        primaryText={job.position}
+                                        rightIcon={<ActionInfo onClick={this.sendJob.bind(this,job)}/>}
+                                    />
+                            )
+                        }):
+                        <h1>No job posted till yet</h1>
+                    }
+                        
+                    </List>
+                    <Dialog
+                        title="Job Details"
+                        actions={actions}
+                        modal={false}
+                        open={this.state.open}
+                        onRequestClose={this.handleClose}
+                    >
+                        {this.props.jobs.map((job,index)=>{
+                            if(job === this.state.job){
+                            return (<div>
+                                <p>{`Position: ${job.position}`}</p>
+                                <p>{`Salary: ${job.salary}`}</p>
+                                <p>{`Last Date to apply: ${job.maxDate}`}</p>
+                                </div>
+                        )}})}
+                    </Dialog>
+                 </div>
             </div>
         )
     }
 }
 const mapStateToProps = (state) => {
     return{
-        company: state.dataReducer.companyData
-    }
+        jobs: state.dataReducer.jobData,
+        uids:state.dataReducer.uids
+    }   
   }
   const mapDispatchToProp = (dispatch) =>({
-    setCompaniesData: (test) => dispatch(setCompaniesData(test))
+    getJobsData: (test) => dispatch(getJobsData(test)),
+    startJobApply:(jobData) => dispatch(startJobApply(jobData))
   })
-  
-  
 export default connect(mapStateToProps,mapDispatchToProp)(Student)

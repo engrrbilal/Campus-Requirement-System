@@ -1,7 +1,7 @@
 import * as firebase from 'firebase'
 import history from '../history';
 
-// ADD_EXPENSE
+// CREATE-USER
 export const signUp = (user) => ({
     type: 'CREATE-USER',
     user
@@ -11,6 +11,7 @@ export const startSignUp = (userData = {}) =>{
     console.log("creating account ...");
     return dispatch =>{
         const {
+            studentUid='',
             fullName='',
             email='anonymous@gmail.com',
             password='',
@@ -27,28 +28,27 @@ export const startSignUp = (userData = {}) =>{
             createdAt=0
           } = userData;
           const type = {value}
-          const student = {fullName,email,password,gender,educationValue,value,
+          const student = {studentUid,fullName,email,gender,educationValue,value,
             experienceValue,studentGrade,majorValue,studentContactNo,createdAt}
-          const company = {fullName,email,password,value,companyContactNo,companyAddress,createdAt}
+          const company = {fullName,email,value,companyContactNo,companyAddress,createdAt}
         firebase.auth().createUserWithEmailAndPassword(userData.email,userData.password)
          .then( data =>{
            let uid = data.uid
            if(type.value === "Student"){
-            firebase.database().ref(`Student/${uid}`).set(student)
+            firebase.database().ref(`Students/${uid}`).set(student)
             dispatch(signUp({
                 uid:uid,
                 ...student
             }))
             history.push('/student')
            }
-           else{
-            firebase.database().ref(`Comapnay/${uid}`).set(company)
+           else if(type.value === "Company"){
+            firebase.database().ref(`Companies/${uid}`).set(company)
             dispatch(signUp({
                 uid:uid,
                 ...company
             }))
-
-          history.push('/company');
+                 history.push('/company');
            }
         }).catch(console.log("error"))
     }   
@@ -67,22 +67,48 @@ export const startSignUp = (userData = {}) =>{
         .then((signedinUser) => {
             let userid = signedinUser.uid
             console.log(userid)
-                firebase.database().ref(`Student/${userid}/`).once('value')
+                firebase.database().ref(`Students/${userid}/`).once('value')
                 .then((studentData) => {
                     console.log(studentData.val())
                     // console.log(stu)     
                     if(studentData.val()!== null){
+                        dispatch(signIn({
+                            uid:userid,
+                            ...user
+                        }))
                             // studentsignedinUser.delete()
                             history.push("/student")
                     }else {
-                        // firebase.database().ref(`Company/${userid}/`).once('value')
-                        // .then((companyData) =>{
-                        //     if(companyData.val()!== null){
-                        //         console.log(companyData.val())
-                        //         // studentsignedinUser.delete()
+                        firebase.database().ref(`Companies/${userid}/`).once('value')
+                        .then((companyData) =>{
+                            if(companyData.val()!== null){
+                                console.log(companyData.val())
+                                // studentsignedinUser.delete()
+                                dispatch(signIn({
+                                    uid:userid,
+                                    ...user
+                                }))
                                 history.push("/company")
-                        // }
-                        // })
+                            }
+                            else{
+                                firebase.database().ref(`Admin/${userid}/`).once('value')
+                                .then((adminData) =>{
+                                    if(adminData.val()!== null)
+                                    {
+                                        console.log(adminData.val())
+                                        // studentsignedinUser.delete()
+                                        dispatch(signIn({
+                                            uid:userid,
+                                            ...user
+                                        }))
+                                        history.push("/admin")
+                                    }
+                                    else{
+                                        alert("User not found!")
+                                    }
+                                 })
+                            }
+                        })
 
                     }
 
@@ -90,5 +116,5 @@ export const startSignUp = (userData = {}) =>{
             
 
         })
-            }       
-    }
+    }       
+}

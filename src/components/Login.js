@@ -3,7 +3,7 @@ import { ValidatorForm } from 'react-form-validator-core';
 import { TextValidator } from 'react-material-ui-form-validator';
 import {connect} from 'react-redux'
 import {iconElementLeft,IconButton,TextField,Paper,FlatButton,RaisedButton,AppBar} from 'material-ui';
-
+import '../Login.css';
 import {Spinner} from './Spinner';
 import Signup from './Signup'
 import {Route,Switch,Link} from 'react-router-dom';
@@ -76,7 +76,7 @@ class Login extends React.Component{
             loading: false,
             error:"Auth error"
           })
-        }, 4000);
+        }, 5000);
 
         }
         

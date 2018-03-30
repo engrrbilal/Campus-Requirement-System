@@ -57,6 +57,7 @@ class Signup extends React.Component {
     super(props);
     this.SignupHandler = this.SignupHandler.bind(this);
     this.state ={
+      studentUid:'',
       fullName:"",
       email:"",
       password:"", 
@@ -67,15 +68,15 @@ class Signup extends React.Component {
       companyContactNo:'',
       companyAddress:'',
       educationValue:'Bachelor',
-      experienceValue:'lessThanYear',
+      experienceValue:'LessThanYear',
       studentGrade:'A',
       majorValue:'Programing',
       studentContactNo:'',
     }
 
   }
+  
   SignupHandler(){
-    
     console.log("creating account ...");
         if(this.state.fullName.trim()){
             this.setState({ error: ' ', loading: true});
@@ -101,7 +102,7 @@ class Signup extends React.Component {
             loading: false,
             error:"Auth error"
           })
-        }, 4000)
+        }, 5000)
       }
   }
   handleOpen = () => {
@@ -113,14 +114,13 @@ class Signup extends React.Component {
   handleClose = () => {
     this.setState({open: false});
   };
-renderButton(){
+  renderButton(){
   if (this.state.loading) {
       return <Spinner/>;
   }
   return (
     <RaisedButton  label="Create Account" primary={true}
      onClick={this.handleOpen} />
-    
   );
 }
 handleChange = (event, index, value) => this.setState({
@@ -136,10 +136,9 @@ handleChange = (event, index, value) => this.setState({
       <FlatButton
         label="Submit"
         type="submit" 
-        onClick={this.SignupHandler}
         primary={true}
         keyboardFocused={true}
-        // onClick={this.handleClose}
+        onClick={this.SignupHandler}
       />,
     ];
     return (
@@ -256,21 +255,6 @@ handleChange = (event, index, value) => this.setState({
               errorMessages={['this field is required']}
               onChange={ev => this.setState({companyContactNo:ev.target.value})}
             />
-              {/* <DropDownMenu
-                value={this.state.companyValue}
-                onChange={(event, index, value) => this.setState({
-                  companyValue:value
-                })}
-                style={styles.customWidth}
-                autoWidth={false}
-              >
-              <h3 style={{alignItems:"center"}}></h3>
-              <MenuItem value='Junior Developer' primaryText="Junior Developer" />
-              <MenuItem value='Senior Developer' primaryText="Senior Developer" />
-              <MenuItem value='Manager' primaryText="Manager" />
-              <MenuItem value='Intern' primaryText="Intern" />
-              <MenuItem value='Accountant' primaryText="Accountant" />
-            </DropDownMenu> */}
           </div>
           :
           <div>
@@ -299,11 +283,11 @@ handleChange = (event, index, value) => this.setState({
             autoWidth={false}
           >
             <h3 style={{alignItems:"center"}}>Experience</h3>
-            <MenuItem value='lessThanYear' primaryText="< 1year" />
-            <MenuItem value='oneYear' primaryText="1 Year" />
-            <MenuItem value='twoyear' primaryText="2 Year" />
-            <MenuItem value='threeYear' primaryText="3 Year" />
-            <MenuItem value='moreThanThree' primaryText="3 Year >" />
+            <MenuItem value='LessThanYear' primaryText="< 1year" />
+            <MenuItem value='One Year' primaryText="1 Year" />
+            <MenuItem value='Two year' primaryText="2 Year" />
+            <MenuItem value='Three Year' primaryText="3 Year" />
+            <MenuItem value='MoreThanThree' primaryText="3 Year >" />
           </DropDownMenu><br/>
           <DropDownMenu
                 value={this.state.studentGrade}
