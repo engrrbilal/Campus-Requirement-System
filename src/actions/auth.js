@@ -11,13 +11,12 @@ export const startSignUp = (userData = {}) =>{
     console.log("creating account ...");
     return dispatch =>{
         const {
-            studentUid='',
             fullName='',
             email='anonymous@gmail.com',
+            uid='',
             password='',
             gender='',
             value='',
-            // companyValue='',
             companyContactNo='',
             educationValue='',
             experienceValue='',
@@ -28,9 +27,9 @@ export const startSignUp = (userData = {}) =>{
             createdAt=0
           } = userData;
           const type = {value}
-          const student = {studentUid,fullName,email,gender,educationValue,value,
+          const student = {uid,fullName,email,gender,educationValue,value,
             experienceValue,studentGrade,majorValue,studentContactNo,createdAt}
-          const company = {fullName,email,value,companyContactNo,companyAddress,createdAt}
+          const company = {uid,fullName,email,value,companyContactNo,companyAddress,createdAt}
         firebase.auth().createUserWithEmailAndPassword(userData.email,userData.password)
          .then( data =>{
            let uid = data.uid
@@ -91,22 +90,7 @@ export const startSignUp = (userData = {}) =>{
                                 history.push("/company")
                             }
                             else{
-                                firebase.database().ref(`Admin/${userid}/`).once('value')
-                                .then((adminData) =>{
-                                    if(adminData.val()!== null)
-                                    {
-                                        console.log(adminData.val())
-                                        // studentsignedinUser.delete()
-                                        dispatch(signIn({
-                                            uid:userid,
-                                            ...user
-                                        }))
-                                        history.push("/admin")
-                                    }
-                                    else{
-                                        alert("User not found!")
-                                    }
-                                 })
+                                history.push("/admin")
                             }
                         })
 

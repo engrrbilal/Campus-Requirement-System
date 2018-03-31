@@ -56,12 +56,12 @@ export const startJobPost = (jobData = {}) =>{
         const {
           position='',
           salary='',
-          maxDate='',
-          createdAt=0
+          Day='',
+          Month='',
+          Year=''
           } = jobData;
-          const job = {position,salary,maxDate,createdAt}
+          const job = {position,salary,Day,Month,Year}
           let uid = firebase.auth().currentUser.uid
-          console.log(uid)
             firebase.database().ref(`Jobs/${uid}`).push(job)
             .then(()=>{
               dispatch(jobPost({
@@ -146,7 +146,9 @@ export const startJobApply = (jobData = {}) =>{
       createdAt=0
       } = jobData;
       const studentsData = {studentUid,createdAt,companyUid,jobPushKey}
-            firebase.database().ref(`/Students/${studentUid}/`).on('value', snap => {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            firebase.database().ref(`/Students/${user.uid}/`).on('value', snap => {
                 let data = snap.val()
                 let obj = {
                     fullName: data.fullName,
@@ -156,27 +158,32 @@ export const startJobApply = (jobData = {}) =>{
                     majorValue:data.majorValue,
                     email: data.email,
                     studentContactNo: data.studentContactNo,
-                    applyAt:createdAt
+                    uid:user.uid
                 }
-                console.log(studentUid)
-                firebase.auth().onAuthStateChanged((user) => {
-                  if (user) {
-                    let uid = user.uid
-                if(studentUid === uid){
-                  alert("You are allready applied for this job")
-                }
-                else{
-                  var key = firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid)
-                // const pushKey = key.getKey()
-                key.set(obj)
-                .then(()=>{
-                  dispatch(jobApply({obj}))
-                  alert("You have applied for this job successfully")
-               }).catch((e)=>("Error while applying ",e)) 
-                }
-              }})
-                
-           })  
+                    var applyData = firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`)
+                    applyData.once('value',snap =>{
+                        let data = snap.val()
+                        let student,apply=false ``
+                        for(let key in data){
+                          student=data[key]
+                        console.log(student.uid)
+                        if(user.uid  === student.uid){
+                          alert("You have allready applied for this job !")
+                          apply=true
+                          break
+                        }
+                      }
+                        if(apply===false){
+                          firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
+                          .then(()=>{
+                            dispatch(jobApply({obj}))
+                            alert("You have applied for this job successfully!")
+                        }).catch((e)=>("Error while applying ",e))
+                        }
+                      })
+           }) 
+          }
+        }) 
   }   
 }
 // DELETE-COMPANY
@@ -192,7 +199,7 @@ export const startDeleteCompany = (data={}) => {
               alert("Company has removed sucessfully!")
               dispatch(deleteCompany(data));
             }).catch((e)=>console.log("Error while removing company",e) )
-};
+  };
 };
 // DELETE-JOB
 export const deleteJob = (data) => ({

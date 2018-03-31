@@ -131,7 +131,8 @@ class Student extends React.Component{
                             return (<div>
                                 <p>{`Position: ${job.position}`}</p>
                                 <p>{`Salary: ${job.salary}`}</p>
-                                <p>{`Last Date to apply: ${job.maxDate}`}</p>
+
+                                <p>{`Last Date to apply: ${job.Day}/${job.Month +1}/${job.Year}`}</p>
                                 </div>
                         )}})}
                     </Dialog>

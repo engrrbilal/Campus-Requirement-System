@@ -257,12 +257,14 @@ class Admin extends React.Component{
                         >
                             {this.props.companies.map((company,index)=>{
                                 if(company === this.state.company){
+                                  let createdDate = company.createdAt
+                                  let createdAt = createdDate.toString("MMM dd")
                                 return (<div>
                                     <p>{`Name: ${company.fullName}`}</p>
                                     <p>{`Email: ${company.email}`}</p>
                                     <p>{`Contact No: ${company.companyContactNo}`}</p>
                                     <p>{`Address: ${company.companyAddress}`}</p>
-                                    <p>{`CreatedAt: ${company.createdAt}`}</p>
+                                    <p>{`CreatedAt: ${createdAt}`}</p>
                                     </div>
                             )}})}
                         </Dialog>

@@ -72,14 +72,16 @@ class Signup extends React.Component {
       studentGrade:'A',
       majorValue:'Programing',
       studentContactNo:'',
+      uid:''
     }
 
   }
-  
   SignupHandler(){
     console.log("creating account ...");
         if(this.state.fullName.trim()){
             this.setState({ error: ' ', loading: true});
+            let date = new Date().toUTCString()
+            let createdAt = date.toString("MMM dd")
             this.props.startSignUp({
             fullName:this.state.fullName,
             email:this.state.email,
@@ -87,14 +89,13 @@ class Signup extends React.Component {
             gender:this.state.gender,
             value:this.state.value,
             educationValue:this.state.educationValue,
-            // companyValue:this.state.companyValue,
             companyContactNo:this.state.companyContactNo,
             companyAddress:this.state.companyAddress,
             experienceValue:this.state.experienceValue,
             studentGrade:this.state.studentGrade,
             majorValue:this.state.majorValue,
             studentContactNo:this.state.studentContactNo,
-            createdAt:Date.now()
+            createdAt:createdAt
           })
           this.setState({open: false});
           setTimeout(() => {

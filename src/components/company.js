@@ -34,14 +34,13 @@ const styles = {
   const optionsStyle = {
     maxWidth: 255,
     marginLeft:'30px'
-    // marginRight: 'auto',
   };
 class Company extends React.Component{
     constructor(props){
         super(props);
         const maxDate = new Date();
-        maxDate.setFullYear(maxDate.getFullYear() + 1);
-        maxDate.setHours(0, 0, 0, 0);
+        maxDate.setMonth(maxDate.getMonth() + 1);
+          
         this.state = {
             slideIndex: 0,
             open:false,
@@ -50,7 +49,6 @@ class Company extends React.Component{
             maxDate: maxDate,
             autoOk: false,
           };
-          
         }
         componentWillMount(){
           {this.props.getCompanyJobsData({
@@ -59,22 +57,23 @@ class Company extends React.Component{
           {this.props.getStudentsData({
             comp:"From Company Dispatch"
           })}
-          
         } 
         jobPosting(){
-          if(this.state.position && this.state.salary){
+          // console.log(this.state.maxDate)
+          let lastDate=this.state.maxDate
+          let Day = lastDate.getDate();
+          let Month = lastDate.getMonth();
+          let Year = lastDate.getFullYear();
             this.props.startJobPost({
               position:this.state.position,
               salary:this.state.salary,
-              maxDate:this.state.maxDate,
-              createdAt:Date.now()
+              Day:Day,
+              Month:Month,
+              Year:Year
             })
             this.setState({
               open:false
             })
-          }else{
-            alert("Please fill the neccesory fields")
-          }
         }
 
         handleChange = (value) => {
@@ -83,8 +82,9 @@ class Company extends React.Component{
           });
         };
         handleChangeMaxDate = (event, date) => {
+          console.log(date)
             this.setState({
-              maxDate: date,
+              maxDate: date
             });
           }
           handleOpen = () => {
@@ -206,7 +206,7 @@ class Company extends React.Component{
                                                 disabled={true}
                                               />,
                                               <ListItem key={this.props.jobs[job].maxDate}
-                                                primaryText={`Last date to Apply:${this.props.jobs[job].maxDate}`}
+                                                primaryText={`Last date to Apply:${this.props.jobs[job].Day}/${this.props.jobs[job].Month +1}/${this.props.jobs[job].Year}`}
                                                 open={this.state.open}
                                               />,
                                               <div style={{marginLeft:20}}>
@@ -216,7 +216,7 @@ class Company extends React.Component{
                                                     if(apply){
                                                       return(
                                                         <ListItem key={studentUid[apply].fullName}
-                                                          primaryText={`Student Apply :"${studentUid[apply].fullName}"`}
+                                                          primaryText={`Student Apply :${studentUid[apply].fullName}`}
                                                           nestedItems={[
                                                             <ListItem key={studentUid[apply].educationValue}
                                                               primaryText={`Education:${studentUid[apply].educationValue}`}
@@ -307,7 +307,6 @@ class Company extends React.Component{
                  <div>
                         <Subheader>Student Applied for jobs</Subheader>
                         {this.props.jobs?Object.keys(this.props.jobs).map((job,index)=>{
-                            // console.log(this.props.jobs[job].jobApplied['d90AJAI8eeX1BRz58PhEF1IITts1'].educationValue)
                             let studentUid = this.props.jobs[job].jobApplied
                             return (
                                 <div>
@@ -317,10 +316,10 @@ class Company extends React.Component{
                                         if(apply){
                                           return(
                                             <ListItem key={studentUid[apply].fullName}
-                                            primaryText={`Student Apply :"${studentUid[apply].fullName}"`} 
+                                            primaryText={`Student Apply :${studentUid[apply].fullName}`} 
                                                   nestedItems={[
                                                     <ListItem key={index}
-                                                    primaryText={this.props.jobs[job].position}
+                                                    primaryText={`Job Position:${this.props.jobs[job].position}`}
                                                           disabled={true}
                                                         />,
                                                     ]}
@@ -328,12 +327,12 @@ class Company extends React.Component{
                                           )
                                         }})
                                         :
-                                        <p style={{marginLeft:20 ,color:"red"}}>No student applied till</p>
+                                        <p> </p>
                                     }
                                 </div>
                             )
                         }):
-                        <p style={{marginLeft:20 ,color:"red"}}>No Job posted till yet</p>
+                        <p style={{marginLeft:20 ,color:"red"}}>No Job posted till yet!</p>
                       }
                      </div>
               </div>
