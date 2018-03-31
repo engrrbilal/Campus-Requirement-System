@@ -3,7 +3,7 @@ import * as firebase from 'firebase';
 import dataReducer from '../reducers/dataReducer'
 import {getStudentsData,getJobsData,getCompaniesData,startDeleteCompany,startDeleteJob,startDeleteStudent} from '../actions/dataActions'
 import {connect} from 'react-redux'
-
+import '../App.css';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import DropDownMenu from 'material-ui/DropDownMenu';
@@ -219,7 +219,7 @@ class Admin extends React.Component{
             />,
           ];
         return (
-            <div >
+            <div className="adminBackground" style={{width:"100%",height:900}}>
                 <div>
                     <Tabs
                     onChange={this.handleChange}
@@ -270,7 +270,6 @@ class Admin extends React.Component{
                         </Dialog>
                    </div>
                     <div style={styles.slide}>
-                    
                       <div>
                         <List>
                             <Subheader>Jobs Posted</Subheader>

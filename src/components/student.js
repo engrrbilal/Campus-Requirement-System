@@ -3,10 +3,12 @@ import * as firebase from 'firebase';
 import dataReducer from '../reducers/dataReducer'
 import {getJobsData,startJobApply} from '../actions/dataActions'
 import {connect} from 'react-redux'
-// import '../Student.css';
+import '../App.css';
 import FlatButton from 'material-ui/FlatButton';
 import {List, ListItem,Toggle,Subheader, Dialog} from 'material-ui';
 import ActionInfo from 'material-ui/svg-icons/action/info';
+import {indigo500} from 'material-ui/styles/colors';
+
 import Admin from './Admin';
 
 class Student extends React.Component{
@@ -100,9 +102,7 @@ class Student extends React.Component{
             />,
           ];
         return (
-            <div >
-                <h1 style={{textAlign:"center"}}>Welcome Student</h1>
-                
+            <div className="studentBackground" style={{width:"100%",height:900}}>
                 <div>
                     <List>
                         <Subheader>Jobs Posted</Subheader>
@@ -111,7 +111,7 @@ class Student extends React.Component{
                             return (
                                     <ListItem key={index}
                                         primaryText={job.position}
-                                        rightIcon={<ActionInfo onClick={this.sendJob.bind(this,job)}/>}
+                                        rightIcon={<ActionInfo onClick={this.sendJob.bind(this,job)}  color={indigo500}/>}
                                     />
                             )
                         }):

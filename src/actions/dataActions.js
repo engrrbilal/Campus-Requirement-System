@@ -160,26 +160,47 @@ export const startJobApply = (jobData = {}) =>{
                     studentContactNo: data.studentContactNo,
                     uid:user.uid
                 }
-                    var applyData = firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`)
+                    let date = new Date()
+                    let day = date.getDate();
+                    let month = date.getMonth()+1;
+                    let year = date.getFullYear();
+                    console.log(day,month,year)
+                    var applyData = firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/`)
                     applyData.once('value',snap =>{
                         let data = snap.val()
-                        let student,apply=false ``
-                        for(let key in data){
-                          student=data[key]
-                        console.log(student.uid)
-                        if(user.uid  === student.uid){
-                          alert("You have allready applied for this job !")
-                          apply=true
-                          break
+                        let jobApplied = data.jobApplied
+                        let student,Day,Month,Year,apply=false
+                        
+                        Day =data.Day;
+                        Month = data.Month;
+                        Year = data.Year
+                        console.log(Day,Month,Year)
+                        if(day === Day && month === Month && year === Year){
+                          console.log("expired")
+                          alert("Sory this Job has expired !")
                         }
-                      }
-                        if(apply===false){
-                          firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
-                          .then(()=>{
-                            dispatch(jobApply({obj}))
-                            alert("You have applied for this job successfully!")
-                        }).catch((e)=>("Error while applying ",e))
-                        }
+                        else if(jobApplied){
+                            for(let key in jobApplied){
+                              student=jobApplied[key]
+                            if(user.uid  === student.uid){
+                              apply=true
+                              break
+                            }
+                            else{
+                              apply=false
+                            }
+                          }
+                          }
+                          if(apply){
+                            alert("You have allready applied for this job !")
+                          }
+                          else{
+                            firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
+                            .then(()=>{
+                              dispatch(jobApply({obj}))
+                              alert("You have applied for this job successfully!")
+                          }).catch((e)=>("Error while applying ",e))
+                          }
                       })
            }) 
           }

@@ -3,7 +3,7 @@ import * as firebase from 'firebase';
 import dataReducer from '../reducers/dataReducer'
 import {getStudentsData,startJobPost,getCompanyJobsData} from '../actions/dataActions'
 import {connect} from 'react-redux'
-
+import '../App.css';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import DropDownMenu from 'material-ui/DropDownMenu';
@@ -131,7 +131,7 @@ class Company extends React.Component{
 
         return (
             <div >
-                <div>
+                <div className="companyBackground" style={{width:"100%",height:900}}>
                     <Tabs
                     onChange={this.handleChange}
                     value={this.state.slideIndex}

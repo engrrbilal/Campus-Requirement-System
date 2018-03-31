@@ -3,7 +3,7 @@ import { ValidatorForm } from 'react-form-validator-core';
 import { TextValidator } from 'react-material-ui-form-validator';
 import {connect} from 'react-redux'
 import {iconElementLeft,IconButton,TextField,Paper,FlatButton,RaisedButton,AppBar} from 'material-ui';
-import '../Login.css';
+import '../App.css';
 import {Spinner} from './Spinner';
 import Signup from './Signup'
 import {Route,Switch,Link} from 'react-router-dom';
@@ -95,7 +95,7 @@ SignupHandler(){
 }
     render(){
       return(
-        <div>
+        <div className="loginBackground" style={{width:"100%",height:900}}>
           <Paper zDepth={3} style={styles.style} >
           <ValidatorForm onSubmit={(e) => e.preventDefault()}>
             <Paper style={styles.styleEmail} >

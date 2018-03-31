@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import '../App.css';
 import { ValidatorForm } from 'react-form-validator-core';
 import { TextValidator } from 'react-material-ui-form-validator';
 import {iconElementLeft,IconButton,Paper,FlatButton,RaisedButton,AppBar,Dialog} from 'material-ui';
@@ -7,6 +8,8 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import {Link} from 'react-router-dom';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import CommunicationCall from 'material-ui/svg-icons/communication/call';
+import {indigo500} from 'material-ui/styles/colors';
 import {Spinner} from './Spinner';
 import Login from './Login'
 import { connect } from 'react-redux';
@@ -72,7 +75,6 @@ class Signup extends React.Component {
       studentGrade:'A',
       majorValue:'Programing',
       studentContactNo:'',
-      uid:''
     }
 
   }
@@ -143,7 +145,7 @@ handleChange = (event, index, value) => this.setState({
       />,
     ];
     return (
-      <div>
+      <div className="signupBackground" style={{width:"100%",height:900}}>
         <Paper zDepth={3} style={styles.style}>
         <ValidatorForm onSubmit={(e)=> e.preventDefault()}>
           <Paper style={styles.styleName}>
@@ -248,6 +250,7 @@ handleChange = (event, index, value) => this.setState({
             /><br/>
               <TextValidator
               value={this.state.companyContactNo}
+              leftIcon={<CommunicationCall color={indigo500} />}
               hintText="Address:"
               name="contact"
               underlineShow={false} fullWidth={false}
@@ -321,6 +324,7 @@ handleChange = (event, index, value) => this.setState({
             <Paper style={styles.styleOthers}>
             <TextValidator
               value={this.state.studentContactNo}
+              leftIcon={<CommunicationCall color={indigo500} />}
               hintText="Contact No:"
               name="contact"
               underlineShow={false} fullWidth={false}
