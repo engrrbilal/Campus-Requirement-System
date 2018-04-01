@@ -128,7 +128,7 @@ class Student extends React.Component{
                     >
                         {this.props.jobs.map((job,index)=>{
                             if(job === this.state.job){
-                            return (<div>
+                            return (<div key={index}>
                                 <p>{`Position: ${job.position}`}</p>
                                 <p>{`Salary: ${job.salary}`}</p>
 

@@ -145,10 +145,10 @@ export const startJobApply = (jobData = {}) =>{
       jobPushKey='',
       createdAt=0
       } = jobData;
-      const studentsData = {studentUid,createdAt,companyUid,jobPushKey}
-        firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            firebase.database().ref(`/Students/${user.uid}/`).on('value', snap => {
+      // const studentsData = {studentUid,createdAt,companyUid,jobPushKey}
+      //   firebase.auth().onAuthStateChanged((user) => {
+      //     if (user) {
+            firebase.database().ref(`/Students/${studentUid}/`).on('value', snap => {
                 let data = snap.val()
                 let obj = {
                     fullName: data.fullName,
@@ -158,7 +158,7 @@ export const startJobApply = (jobData = {}) =>{
                     majorValue:data.majorValue,
                     email: data.email,
                     studentContactNo: data.studentContactNo,
-                    uid:user.uid
+                    uid:studentUid
                 }
                     let date = new Date()
                     let day = date.getDate();
@@ -175,35 +175,41 @@ export const startJobApply = (jobData = {}) =>{
                         Month = data.Month;
                         Year = data.Year
                         console.log(Day,Month,Year)
-                        if(day === Day && month === Month && year === Year){
+                        if((day===Day && month > Month && year>=Year)||(day>Day && month >= Month && year>=Year)){
                           console.log("expired")
                           alert("Sory this Job has expired !")
                         }
                         else if(jobApplied){
                             for(let key in jobApplied){
                               student=jobApplied[key]
-                            if(user.uid  === student.uid){
-                              apply=true
+                            if(studentUid  === student.uid){
+                              // apply=true
+                              alert("You have allready applied for this job !")
                               break
                             }
                             else{
-                              apply=false
+                              firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
+                              .then(()=>{
+                                dispatch(jobApply({obj}))
+                                alert("You have applied for this job successfully!")
+                            }).catch((e)=>("Error while applying ",e))
+                            break
                             }
                           }
                           }
-                          if(apply){
-                            alert("You have allready applied for this job !")
-                          }
-                          else{
-                            firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
-                            .then(()=>{
-                              dispatch(jobApply({obj}))
-                              alert("You have applied for this job successfully!")
-                          }).catch((e)=>("Error while applying ",e))
-                          }
+                          // if(apply){
+                          //   alert("You have allready applied for this job !")
+                          // }
+                          // else{
+                          //   firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
+                          //   .then(()=>{
+                          //     dispatch(jobApply({obj}))
+                          //     alert("You have applied for this job successfully!")
+                          // }).catch((e)=>("Error while applying ",e))
+                          // }
                       })
-           }) 
-          }
+          //  }) 
+          // }
         }) 
   }   
 }
