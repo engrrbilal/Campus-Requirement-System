@@ -54,13 +54,14 @@ export const startJobPost = (jobData = {}) =>{
     console.log("Job posting ...");
     return dispatch =>{
         const {
+          displayName='',
           position='',
           salary='',
           Day='',
           Month='',
           Year=''
           } = jobData;
-          const job = {position,salary,Day,Month,Year}
+          const job = {displayName,position,salary,Day,Month,Year}
           let uid = firebase.auth().currentUser.uid
             firebase.database().ref(`Jobs/${uid}`).push(job)
             .then(()=>{
@@ -172,10 +173,10 @@ export const startJobApply = (jobData = {}) =>{
                         let student,Day,Month,Year,apply=false
                         
                         Day =data.Day;
-                        Month = data.Month;
+                        Month = data.Month+1;
                         Year = data.Year
                         console.log(Day,Month,Year)
-                        if((day===Day && month > Month && year>=Year)||(day>Day && month >= Month && year>=Year)){
+                        if((day <=Day && month > Month && year>=Year)||(day>=Day && month >= Month && year>=Year)){
                           console.log("expired")
                           alert("Sory this Job has expired !")
                         }
@@ -183,33 +184,26 @@ export const startJobApply = (jobData = {}) =>{
                             for(let key in jobApplied){
                               student=jobApplied[key]
                             if(studentUid  === student.uid){
-                              // apply=true
-                              alert("You have allready applied for this job !")
+                              apply=true
                               break
                             }
                             else{
-                              firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
-                              .then(()=>{
-                                dispatch(jobApply({obj}))
-                                alert("You have applied for this job successfully!")
-                            }).catch((e)=>("Error while applying ",e))
-                            break
+                              apply=false
                             }
+                            
                           }
                           }
-                          // if(apply){
-                          //   alert("You have allready applied for this job !")
-                          // }
-                          // else{
-                          //   firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
-                          //   .then(()=>{
-                          //     dispatch(jobApply({obj}))
-                          //     alert("You have applied for this job successfully!")
-                          // }).catch((e)=>("Error while applying ",e))
-                          // }
+                          if(apply){
+                            alert("You have allready applied for this job !")
+                          }
+                          else{
+                            firebase.database().ref(`/Jobs/${companyUid}/${jobPushKey}/jobApplied/`).child(studentUid).set(obj)
+                            .then(()=>{
+                              dispatch(jobApply({obj}))
+                              alert("You have applied for this job successfully!")
+                          }).catch((e)=>("Error while applying ",e))
+                          }
                       })
-          //  }) 
-          // }
         }) 
   }   
 }

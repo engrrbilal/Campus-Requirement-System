@@ -44,6 +44,7 @@ class Company extends React.Component{
         this.state = {
             slideIndex: 0,
             open:false,
+            displayName:'',
             position:'Junior Developer',
             salary:'Between 20000 and 30000',
             maxDate: maxDate,
@@ -57,14 +58,22 @@ class Company extends React.Component{
           {this.props.getStudentsData({
             comp:"From Company Dispatch"
           })}
+          firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+              this.setState({
+                displayName:user.displayName
+              })
+              console.log(user.displayName)
+            } 
+        });
         } 
         jobPosting(){
-          // console.log(this.state.maxDate)
           let lastDate=this.state.maxDate
           let Day = lastDate.getDate();
           let Month = lastDate.getMonth();
           let Year = lastDate.getFullYear();
             this.props.startJobPost({
+              displayName:this.state.displayName,
               position:this.state.position,
               salary:this.state.salary,
               Day:Day,
@@ -75,7 +84,6 @@ class Company extends React.Component{
               open:false
             })
         }
-
         handleChange = (value) => {
           this.setState({
             slideIndex: value,

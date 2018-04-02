@@ -8,8 +8,6 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import {Link} from 'react-router-dom';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import CommunicationCall from 'material-ui/svg-icons/communication/call';
-import {indigo500} from 'material-ui/styles/colors';
 import {Spinner} from './Spinner';
 import Login from './Login'
 import { connect } from 'react-redux';
@@ -76,7 +74,6 @@ class Signup extends React.Component {
       majorValue:'Programing',
       studentContactNo:'',
     }
-
   }
   SignupHandler(){
     console.log("creating account ...");
@@ -250,7 +247,6 @@ handleChange = (event, index, value) => this.setState({
             /><br/>
               <TextValidator
               value={this.state.companyContactNo}
-              leftIcon={<CommunicationCall color={indigo500} />}
               hintText="Address:"
               name="contact"
               underlineShow={false} fullWidth={false}
@@ -324,7 +320,6 @@ handleChange = (event, index, value) => this.setState({
             <Paper style={styles.styleOthers}>
             <TextValidator
               value={this.state.studentContactNo}
-              leftIcon={<CommunicationCall color={indigo500} />}
               hintText="Contact No:"
               name="contact"
               underlineShow={false} fullWidth={false}

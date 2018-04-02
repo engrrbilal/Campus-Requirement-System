@@ -264,7 +264,7 @@ class Admin extends React.Component{
                                     <p>{`Email: ${company.email}`}</p>
                                     <p>{`Contact No: ${company.companyContactNo}`}</p>
                                     <p>{`Address: ${company.companyAddress}`}</p>
-                                    <p>{`CreatedAt: ${createdAt}`}</p>
+                                    <p>{`Registerd At: ${createdAt}`}</p>
                                     </div>
                             )}})}
                         </Dialog>

@@ -76,7 +76,7 @@ class Login extends React.Component{
             loading: false,
             error:"Auth error"
           })
-        }, 5000);
+        }, 6000);
 
         }
         

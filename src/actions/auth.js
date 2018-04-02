@@ -27,12 +27,13 @@ export const startSignUp = (userData = {}) =>{
             createdAt=0
           } = userData;
           const type = {value}
-          const student = {uid,fullName,email,gender,educationValue,value,
+          const student = {fullName,email,gender,educationValue,value,
             experienceValue,studentGrade,majorValue,studentContactNo,createdAt}
-          const company = {uid,fullName,email,value,companyContactNo,companyAddress,createdAt}
+          const company = {fullName,email,value,companyContactNo,companyAddress,createdAt}
         firebase.auth().createUserWithEmailAndPassword(userData.email,userData.password)
          .then( data =>{
            let uid = data.uid
+           firebase.auth().currentUser.updateProfile({displayName:fullName})
            if(type.value === "Student"){
             firebase.database().ref(`Students/${uid}`).set(student)
             dispatch(signUp({
