@@ -2,23 +2,78 @@ import React, { Component } from 'react';
 import './App.css';
 import Login from './components/Login';
 import Signup from './components/Signup'
-import {Router, Route, Switch} from 'react-router-dom';
+import {Router, Route, Switch,Redirect} from 'react-router-dom';
 import {iconElementLeft,IconButton,TextField,Paper,FlatButton,RaisedButton,AppBar} from 'material-ui';
 import firebase from 'firebase'
 import history from './history';
 import Student from './components/student';
 import Company from './components/company';
 import Admin from './components/Admin';
+
+function PrivateRoute1({ component: Component, authed, ...rest }) {
+  return (
+      <Route
+          {...rest}
+          render={(props) => authed === true
+              ? <Component {...props} />
+              : <Redirect to={{ pathname: '/' }} />}
+      />
+  )
+}
+
+
+function PrivateRoute2({ component: Component, authed, ...rest }) {
+  return (
+      <Route
+          {...rest}
+          render={(props) => authed === true
+              ? <Component {...props} />
+              : <Redirect to={{ pathname: '/'}} />}
+      />
+  )
+}
+
+
+function PrivateRoute3({ component: Component, authed, ...rest }) {
+  return (
+      <Route
+          {...rest}
+          render={(props) => authed === true
+              ? <Component {...props} />
+              : <Redirect to={{ pathname: '/'}} />}
+      />
+  )
+}
+
 class App extends Component {
-  state={loggedIn:null}
-  componentWillMount(){
+  constructor(props){
+    super(props);
+    this.state={
+      authed: false,
+      loggedIn:null
+    }
+  }
+  componentWillMount() {
+    let that = this
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-            this.setState({ 
-                loggedIn: true,
-             });
-        } else {
-            this.setState({ loggedIn: false });
+            that.setState({
+                authed: true,
+                loggedIn:true
+            })
+            let type = localStorage.getItem("type")
+            let convertype = JSON.parse(type)
+            if (convertype !== null) {
+                history.push(convertype)
+            }
+        }
+
+        else {
+            console.log(user)
+            that.setState({
+                authed: false,
+                loggedIn:false
+            })
         }
     });
 }
@@ -41,9 +96,9 @@ logOut =()=>{
             <switch>
               <Route exact path="/" component={Login}/>
               <Route path="/signup" component={Signup} />
-              <Route path="/admin" component={Admin}/>
-              <Route path="/student" component={Student} />
-              <Route path="/company" component={Company} />
+              <PrivateRoute1 authed={this.state.authed} path="/admin" component={Admin}/>
+              <PrivateRoute2 authed={this.state.authed} path="/student" component={Student} />
+              <PrivateRoute3 authed={this.state.authed} path="/company" component={Company} />
             </switch>
         </div>
       </Router>

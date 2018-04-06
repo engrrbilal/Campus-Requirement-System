@@ -70,8 +70,7 @@ export const startUpdateStudent= (updates={}) => {
 export const companiesData = (data) => ({
   type: 'COMPANY-DATA',
   data
-});
-
+})
 export const getCompaniesData = (test2={}) => {
   return (dispatch) => {
     

@@ -72,6 +72,7 @@ class Company extends React.Component{
             comp:"From Company Dispatch"
           })}
           console.log(this.props)
+          localStorage.setItem("type", JSON.stringify("/company"))
           
         } 
         jobPosting = () =>{
@@ -327,7 +328,7 @@ class Company extends React.Component{
                                                               disabled={true}
                                                             />,
                                                             <ListItem key={studentUid[apply].email}
-                                                              primaryText={`Email:${studentUid[apply].email}`}
+                                                              primaryText={<a href={`mailto:${studentUid[apply].email}`} >{`Email:${studentUid[apply].email}`}</a>}
                                                               disabled={true}
                                                             />,
                                                             <ListItem key={studentUid[apply].studentContactNo}
@@ -404,7 +405,7 @@ class Company extends React.Component{
                                         />,
                                         <ListItem
                                           key={student.email}
-                                          primaryText={`Email:${student.email}`}
+                                          primaryText={<a href={`mailto:${student.email}`} >{`Email:${student.email}`}</a>}
                                         />,
                                         <ListItem
                                           key={student.studentContactNo}

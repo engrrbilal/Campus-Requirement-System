@@ -95,6 +95,7 @@ class Student extends React.Component{
             studentGrade: this.props.student.studentGrade,
             studentContactNo: this.props.student.studentContactNo
           })},3000)
+          localStorage.setItem("type", JSON.stringify("/student"))
     }
 
     handleChange = (value) => {

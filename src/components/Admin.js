@@ -62,6 +62,7 @@ class Admin extends React.Component{
         {this.props.getStudentsData({
           stu:"From Company Dispatch"
         })}
+        localStorage.setItem("type", JSON.stringify("/admin"))
       } 
       handleChange = (value) => {
         this.setState({
