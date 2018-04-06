@@ -4,7 +4,7 @@ import '../App.css';
 import { ValidatorForm } from 'react-form-validator-core';
 import { TextValidator } from 'react-material-ui-form-validator';
 import {iconElementLeft,IconButton,Paper,FlatButton,RaisedButton,AppBar,Dialog} from 'material-ui';
-import DropDownMenu from 'material-ui/DropDownMenu';
+import {DropDownMenu,SelectField} from 'material-ui';
 import MenuItem from 'material-ui/MenuItem';
 import {Link} from 'react-router-dom';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
@@ -52,6 +52,10 @@ const styles = {
     width: '120px'
     
   },
+  customContentStyle : {
+    width: 450,
+    maxWidth: 'none',
+  }
 };
 class Signup extends React.Component {
   constructor(props){
@@ -137,7 +141,6 @@ handleChange = (event, index, value) => this.setState({
         label="Submit"
         type="submit" 
         primary={true}
-        keyboardFocused={true}
         onClick={this.SignupHandler}
       />,
     ];
@@ -226,8 +229,9 @@ handleChange = (event, index, value) => this.setState({
           {this.renderButton()}
        <div>
         <Dialog
-          title="Details"
+          title={<p style={{textAlign:"center"}}>Details</p>}
           actions={actions}
+          contentStyle={styles.customContentStyle}
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
@@ -237,20 +241,20 @@ handleChange = (event, index, value) => this.setState({
             <div>
               <TextValidator
               value={this.state.companyAddress}
-              hintText="Contact No:"
-              name="address"
+              hintText="Address:"
+              name="contact"
               underlineShow={false} fullWidth={false}
-              type="number"
+              type="string"
               validators={['required']}
               errorMessages={['this field is required']}
               onChange={ev => this.setState({companyAddress:ev.target.value})}
             /><br/>
               <TextValidator
               value={this.state.companyContactNo}
-              hintText="Address:"
+              hintText="Contact No:"
               name="contact"
               underlineShow={false} fullWidth={false}
-              type="string"
+              type="number"
               validators={['required']}
               errorMessages={['this field is required']}
               onChange={ev => this.setState({companyContactNo:ev.target.value})}
@@ -258,7 +262,8 @@ handleChange = (event, index, value) => this.setState({
           </div>
           :
           <div>
-            <DropDownMenu
+            <SelectField floatingLabelText="Education"
+              style={{marginLeft:40}}
               value={this.state.educationValue}
               onChange={(event, index, value) => this.setState({
                 educationValue:value
@@ -266,15 +271,15 @@ handleChange = (event, index, value) => this.setState({
               // style={styles.customWidth}
               autoWidth={false}
             >
-            <h3 style={{alignItems:"center"}}>Education</h3>
             <MenuItem value='PHD' primaryText="PHD" />
             <MenuItem value='Master' primaryText="Master" />
             <MenuItem value='Bachelor' primaryText="Bachelor" />
             <MenuItem value='Inter' primaryText="inter" />
             <MenuItem value='Matric' primaryText="Matric" />
-            </DropDownMenu>
+            </SelectField>
             <br />
-            <DropDownMenu
+            <SelectField floatingLabelText="Experience"
+            style={{marginLeft:40}}
             value={this.state.experienceValue}
             onChange={(event, index, value) => this.setState({
               experienceValue:value
@@ -282,14 +287,14 @@ handleChange = (event, index, value) => this.setState({
             // style={styles.customWidth}
             autoWidth={false}
           >
-            <h3 style={{alignItems:"center"}}>Experience</h3>
             <MenuItem value='LessThanYear' primaryText="< 1year" />
             <MenuItem value='One Year' primaryText="1 Year" />
             <MenuItem value='Two year' primaryText="2 Year" />
             <MenuItem value='Three Year' primaryText="3 Year" />
             <MenuItem value='MoreThanThree' primaryText="3 Year >" />
-          </DropDownMenu><br/>
-          <DropDownMenu
+          </SelectField><br/>
+          <SelectField floatingLabelText="Grade"
+                style={{marginLeft:40}}
                 value={this.state.studentGrade}
                 onChange={(event, index, value) => this.setState({
                   studentGrade:value
@@ -297,13 +302,14 @@ handleChange = (event, index, value) => this.setState({
                 // style={styles.customWidth}
                 autoWidth={false}
               >
-              <h3 style={{alignItems:"center"}}>Grade</h3>
               <MenuItem value='A+' primaryText="A+" />
               <MenuItem value='A' primaryText="A" />
               <MenuItem value='B' primaryText="B" />
               <MenuItem value='C' primaryText="C" />
-        </DropDownMenu>
-        <DropDownMenu
+            </SelectField>
+            <br/>
+            <SelectField floatingLabelText="Major In"
+                style={{marginLeft:40}}
                 value={this.state.majorValue}
                 onChange={(event, index, value) => this.setState({
                   majorValue:value
@@ -311,12 +317,11 @@ handleChange = (event, index, value) => this.setState({
                 // style={styles.customWidth}
                 autoWidth={false}
               >
-              <h3 style={{alignItems:"center"}}>Major In</h3>
               <MenuItem value='Programing' primaryText="Programing" />
               <MenuItem value='Mathmatics' primaryText="Mathmatics" />
               <MenuItem value='Networking' primaryText="Networking" />
               <MenuItem value='Other' primaryText="Other" />
-            </DropDownMenu>
+            </SelectField>
             <Paper style={styles.styleOthers}>
             <TextValidator
               value={this.state.studentContactNo}
@@ -333,8 +338,8 @@ handleChange = (event, index, value) => this.setState({
         
       }
       </Dialog>
-          </div>
-       </ValidatorForm>
+    </div>
+    </ValidatorForm>
         
      
       </Paper>

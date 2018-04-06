@@ -22,7 +22,51 @@ export const studentsData = (data) => ({
       })
     };
   };
-  // COMPANY-DATA
+  //STUDENT-PROFILE-DATA
+  export const studentProfileData = (data) => ({
+    type: 'STUDENT-PROFILE-DATA',
+    data
+  });
+  export const getStudentProfileData = (test={}) => {
+    return (dispatch) => {
+
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            firebase.database().ref(`Students/${user.uid}`).on("value", snap => {
+                let profileData = snap.val();
+                // console.log(dbdata)
+                dispatch(studentProfileData(profileData))
+            })
+        }
+
+    })
+    };
+  };
+  // UPDATE-STUDENT
+export const updateStudent = (updates) => ({
+  type: 'UPDATE-STUDENT',
+  updates:updates
+});
+
+export const startUpdateStudent= (updates={}) => {
+  return (dispatch) => {
+    const {
+      id='',
+      fullName='',
+      educationValu='',
+      experienceValue='',
+      majorValue='',
+      studentGrade='',
+      studentContactNo='',
+      } = updates;
+    console.log(updates)
+    return firebase.database().ref(`Students/${updates.id}`).update(updates).then(() => {
+      dispatch(updateStudent(updates));
+      alert("Your Profile has updated !")
+    });
+  };
+};
+  // COMPANIES-DATA
 export const companiesData = (data) => ({
   type: 'COMPANY-DATA',
   data
@@ -30,16 +74,22 @@ export const companiesData = (data) => ({
 
 export const getCompaniesData = (test2={}) => {
   return (dispatch) => {
+    
     firebase.database().ref("Companies").on('value',(snapshot) => {
       const compData = [];
-
-      snapshot.forEach((childSnapshot) => {
-        compData.push({
-          id: childSnapshot.key,
-          ...childSnapshot.val()
-        });
-      });
-      dispatch(companiesData(compData));
+      let data = snapshot.val()
+      for (var key in data) {
+        let obj = data[key];
+      if(obj.value !== "Admin"){
+        console.log(obj.value)
+        // snapshot.forEach((childSnapshot) => {
+          compData.push({
+            ...obj
+          });
+        // });
+        dispatch(companiesData(compData))
+      }
+    }
     })
   };
 };
@@ -54,24 +104,31 @@ export const startJobPost = (jobData = {}) =>{
     console.log("Job posting ...");
     return dispatch =>{
         const {
-          displayName='',
           position='',
+          educationValue='',
+          experienceValue='',
           salary='',
           Day='',
           Month='',
           Year=''
           } = jobData;
-          const job = {displayName,position,salary,Day,Month,Year}
-          let uid = firebase.auth().currentUser.uid
+          firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+              let uid = user.uid;
+              let displayName = user.displayName;
+              console.log(displayName)
+              console.log(uid)
+        const job = {uid,displayName,position,salary,educationValue,experienceValue,Day,Month,Year}
             firebase.database().ref(`Jobs/${uid}`).push(job)
             .then(()=>{
               dispatch(jobPost({
-                uid:uid,
+                // uid:uid,
                 ...job
              }))
             alert("Job Posted Successfully")
             }).catch((e)=>console.log("Error While posting job",e))
-            
+          } 
+        });
     }   
   }
     // JOB-DATA
@@ -91,7 +148,6 @@ export const startJobPost = (jobData = {}) =>{
                 let uids = [];
                 for (var key in data) {
                   let obj = data[key];
-                  // uids.push(key)
                   for (let key1 in obj) {
                       jobData.push({
                         ...obj[key1],
@@ -103,8 +159,6 @@ export const startJobPost = (jobData = {}) =>{
               }
                 dispatch(jobsData(uids,dataPushKey,jobData));
               })
-          // }})
-        
       };
     };
 
@@ -132,6 +186,7 @@ export const startJobPost = (jobData = {}) =>{
         }) 
     };
 };
+//JOB-APPLY
 export const jobApply = (data) => ({
   type: 'JOB-APPLY',
   data,
@@ -176,11 +231,11 @@ export const startJobApply = (jobData = {}) =>{
                         Month = data.Month+1;
                         Year = data.Year
                         console.log(Day,Month,Year)
-                        if((day <=Day && month > Month && year>=Year)||(day>=Day && month >= Month && year>=Year)){
-                          console.log("expired")
-                          alert("Sory this Job has expired !")
-                        }
-                        else if(jobApplied){
+                        // if((day <=Day && month > Month && year>=Year)||(day>=Day && month >= Month && year>=Year)){
+                        //   console.log("expired")
+                        //   alert("Sory this Job has expired !")
+                        // }
+                        if(jobApplied){
                             for(let key in jobApplied){
                               student=jobApplied[key]
                             if(studentUid  === student.uid){

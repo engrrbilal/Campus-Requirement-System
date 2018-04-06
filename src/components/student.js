@@ -1,16 +1,27 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import dataReducer from '../reducers/dataReducer'
-import {getJobsData,startJobApply,getCompaniesData} from '../actions/dataActions'
+import {getJobsData,startJobApply,getCompaniesData,getStudentProfileData,startUpdateStudent} from '../actions/dataActions'
 import {connect} from 'react-redux'
 import '../App.css';
 import FlatButton from 'material-ui/FlatButton';
-import {List, ListItem,Toggle,Subheader, Dialog} from 'material-ui';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+import {List, ListItem,Toggle,Subheader, Dialog,Paper,RaisedButton,Divider,TextField,SelectField} from 'material-ui';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import {indigo500} from 'material-ui/styles/colors';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+  } from 'material-ui/Table';
+  
 // import Admin from './Admin';
 
 const styles = {
@@ -23,6 +34,9 @@ const styles = {
     slide: {
       padding: 10,
     },
+    style:{
+        marginLeft: 20,
+    }
   };
 
 class Student extends React.Component{
@@ -37,16 +51,32 @@ class Student extends React.Component{
             companyUid:'',
             jobPushKey:'',
             createdAt:'',
-            slideIndex: 0
+            slideIndex: 0,
+            disabled:true,
+            fullName:'',
+            educationValue:'',
+            experienceValue:'',
+            majorValue:'',
+            studentGrade:'',
+            studentContactNo:'',
+            update:false
+
         }
     }
     componentWillMount(){
+        console.log(this.props.student.fullName)
+       
+       
         {this.props.getJobsData({
             stu:"From Student retrieve jobs Dispatch"
         })}
+        
         {this.props.getCompaniesData({
             comp:"From Admin Dispatch"
+          })}{this.props.getStudentProfileData({
+            comp:"From Company Dispatch"
           })}
+
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({ 
@@ -56,7 +86,17 @@ class Student extends React.Component{
                 this.setState({ studentUid:''});
             }
         });
+        setTimeout(()=>{ this.setState({
+   
+            fullName: this.props.student.fullName,
+            educationValue: this.props.student.educationValue,
+            experienceValue: this.props.student.experienceValue,
+            majorValue: this.props.student.majorValue,
+            studentGrade: this.props.student.studentGrade,
+            studentContactNo: this.props.student.studentContactNo
+          })},3000)
     }
+
     handleChange = (value) => {
         this.setState({
           slideIndex: value,
@@ -116,6 +156,27 @@ class Student extends React.Component{
             createdAt:this.state.createdAt
         })
       }
+      editProfile = ()=>{
+          this.setState({
+            disabled:false,
+            update:true,
+          })
+   
+      }
+      updateProfile = ()=>{
+           this.applyUpdateDispatch()
+    }
+    applyUpdateDispatch(){
+        this.props.startUpdateStudent({
+            id:this.state.studentUid,
+            fullName:this.state.fullName,
+            educationValue:this.state.educationValue,
+            experienceValue:this.state.experienceValue,
+            majorValue:this.state.majorValue,
+            studentGrade:this.state.studentGrade,
+            studentContactNo:this.state.studentContactNo,
+        })
+      }
     render(){
         const actions = [
             <FlatButton
@@ -126,7 +187,6 @@ class Student extends React.Component{
             <FlatButton
               label="Apply"
               primary={true}
-              keyboardFocused={true}
               onClick={() =>this.jobApply()}
             />,
           ];
@@ -139,7 +199,6 @@ class Student extends React.Component{
             <FlatButton
               label="Ok"
               primary={true}
-              keyboardFocused={true}
               onClick={this.handleClose}
             />,
           ];
@@ -152,6 +211,7 @@ class Student extends React.Component{
                     >
                     <Tab label="Jobs Posted" value={0} />
                     <Tab label="Companies" value={1} />
+                    <Tab label="Profile" value={2} />
                 </Tabs>
                 <SwipeableViews
                     index={this.state.slideIndex}
@@ -186,6 +246,8 @@ class Student extends React.Component{
                                 <p>{`Company: ${job.displayName}`}</p>
                                 <p>{`Position: ${job.position}`}</p>
                                 <p>{`Salary: ${job.salary}`}</p>
+                                <p>{`Education Required: ${job.educationValue}`}</p>
+                                <p>{`Experience Required: ${job.experienceValue}`}</p>
                                 <p>{`Last Date to apply: ${job.Day}/${job.Month +1}/${job.Year}`}</p>
                                 </div>
                         )}})}
@@ -195,11 +257,13 @@ class Student extends React.Component{
                         <List>
                             <Subheader>Companies List</Subheader>
                             {(this.props.companies)?this.props.companies.map((company,index)=>{
-                                
+                                if(company.fullName !== "Admin"){
+                                    
+                                }
                                 return (
                                    <ListItem key={index}
                                         primaryText={company.fullName}
-                                        rightIcon={<ActionInfo onClick={this.sendCompany.bind(this,company)}/>}
+                                        rightIcon={<ActionInfo onClick={this.sendCompany.bind(this,company)} color={indigo500}/>}
                                   />
                                 )
                             }):
@@ -216,14 +280,103 @@ class Student extends React.Component{
                             {this.props.companies.map((company,index)=>{
                                 if(company === this.state.company){
                                 return (<div key={index}>
-                                    <p>{`Name: ${company.fullName}`}</p>
-                                    <p>{`Email: ${company.email}`}</p>
-                                    <p>{`Contact No: ${company.companyContactNo}`}</p>
-                                    <p>{`Address: ${company.companyAddress}`}</p>
+                                        <p>{`Name: ${company.fullName}`}</p>
+                                        <p>{`Email: ${company.email}`}</p>
+                                        <p>{`Contact No: ${company.companyContactNo}`}</p>
+                                        <p>{`Address: ${company.companyAddress}`}</p>
                                     </div>
                             )}})}
                         </Dialog>
                    </div>
+                    <div>
+                    <Card>
+                        <CardHeader
+                        title={<p style={{textAlign:"center"}}>Your profile</p>}
+                        style={{align:"center"}}
+                        />
+                        <div>
+                            <TextField floatingLabelText="Full Name" value={this.state.fullName}  style={styles.style} underlineShow={false}
+                                disabled={this.state.disabled} onChange={(e)=>this.setState({fullName:e.target.value})}/>
+                                <Divider />
+                                        <SelectField floatingLabelText="Education"
+                                            value={this.state.educationValue}
+                                            style={styles.style}
+                                            disabled={this.state.disabled}
+                                            onChange={(event, index, value) => this.setState({
+                                            educationValue:value
+                                                
+                                            })}
+                                            >
+                                            <MenuItem value='PHD' primaryText="PHD" />
+                                            <MenuItem value='Master' primaryText="Master" />
+                                            <MenuItem value='Bachelor' primaryText="Bachelor" />
+                                            <MenuItem value='Inter' primaryText="inter" />
+                                            <MenuItem value='Matric' primaryText="Matric" />
+                                            </SelectField>
+                                            <br />
+                                <Divider />
+                                <SelectField floatingLabelText="Experience"
+                                            disabled={this.state.disabled}
+                                            value={this.state.experienceValue}
+                                            style={styles.style}
+                                            onChange={(event, index, value) => this.setState({
+                                            experienceValue:value
+                                            
+                                            })}
+                                            autoWidth={false}
+                                        >
+                                            <MenuItem value='LessThanYear' primaryText="< 1year" />
+                                            <MenuItem value='One Year' primaryText="1 Year" />
+                                            <MenuItem value='Two year' primaryText="2 Year" />
+                                            <MenuItem value='Three Year' primaryText="3 Year" />
+                                            <MenuItem value='MoreThanThree' primaryText="3 Year >" />
+                                        </SelectField><br/>
+                                        <Divider />
+                                <SelectField floatingLabelText="Major In"
+                                            disabled={this.state.disabled}
+                                            style={styles.style}
+                                            value={this.state.majorValue}
+                                            onChange={(event, index, value) => this.setState({
+                                            majorValue:value
+                                            })}
+                                            autoWidth={false}
+                                        >
+                                        <MenuItem value='Programing' primaryText="Programing" />
+                                        <MenuItem value='Mathmatics' primaryText="Mathmatics" />
+                                        <MenuItem value='Networking' primaryText="Networking" />
+                                        <MenuItem value='Other' primaryText="Other" />
+                                        </SelectField>
+                                        <Divider />
+                                <SelectField floatingLabelText="Grade"
+                                            value={this.state.studentGrade}
+                                            disabled={this.state.disabled}
+                                            style={styles.style}
+                                            onChange={(event, index, value) => this.setState({
+                                            studentGrade:value
+                                            })}
+                                            autoWidth={false}
+                                        >
+                                        <h3 style={{alignItems:"center"}}>Grade</h3>
+                                        <MenuItem value='A+' primaryText="A+" />
+                                        <MenuItem value='A' primaryText="A" />
+                                        <MenuItem value='B' primaryText="B" />
+                                        <MenuItem value='C' primaryText="C" />
+                                </SelectField>
+                                <Divider></Divider>
+                                        <TextField floatingLabelText="Contact No" value={this.state.studentContactNo} style={styles.style} underlineShow={false}
+                                         disabled={this.state.disabled} onChange={(e)=>this.setState({studentContactNo:e.target.value})}/>
+                                        <Divider></Divider>
+                                        {(this.state.update)?
+                                            <RaisedButton label="Update" primary={true} onClick={this.updateProfile} 
+                                             style={{height:"50",fontWeight:"bold"}} labelStyle={{fontSize:'24px'}} fullWidth={true}/>:
+                                            <RaisedButton label="Edit" primary={true} onClick={this.editProfile} fullWidth={true}
+                                             style={{height:"50",fontSize:'30%'}}
+                                             labelStyle={{fontSize:'24px'}}
+                                             />
+                                        }
+                                </div>
+                    </Card>
+                    </div>
                 </SwipeableViews>
       </div>
                 
@@ -235,11 +388,15 @@ const mapStateToProps = (state) => {
     return{
         jobs: state.dataReducer.jobData,
         companies: state.dataReducer.companyData,
+        students: state.dataReducer.studentData,
+        student: state.dataReducer.studentProfile,
     }   
   }
   const mapDispatchToProp = (dispatch) =>({
     getJobsData: (test) => dispatch(getJobsData(test)),
     startJobApply:(jobData) => dispatch(startJobApply(jobData)),
-    getCompaniesData:(jobData) => dispatch(getCompaniesData(jobData))
+    getCompaniesData:(jobData) => dispatch(getCompaniesData(jobData)),
+    getStudentProfileData: (test) => dispatch(getStudentProfileData(test)),
+    startUpdateStudent: (test) => dispatch(startUpdateStudent(test)),
   })
 export default connect(mapStateToProps,mapDispatchToProp)(Student)

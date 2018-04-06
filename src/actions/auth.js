@@ -69,29 +69,42 @@ export const startSignUp = (userData = {}) =>{
             console.log(userid)
                 firebase.database().ref(`Students/${userid}/`).once('value')
                 .then((studentData) => {
-                    console.log(studentData.val())
-                    // console.log(stu)     
                     if(studentData.val()!== null){
-                        dispatch(signIn({
-                            uid:userid,
-                            ...user
-                        }))
-                            // studentsignedinUser.delete()
-                            history.push("/student")
-                    }else {
+                        const val = studentData.val().value
+                        if(val=== "Student"){
+                            dispatch(signIn({
+                                uid:userid,
+                                ...user
+                            }))
+                                history.push("/student")
+                        }
+                    }  
+                   else {
                         firebase.database().ref(`Companies/${userid}/`).once('value')
                         .then((companyData) =>{
                             if(companyData.val()!== null){
+                                const val = companyData.val().value
+                            if(val=== "Company"){
                                 console.log(companyData.val())
-                                // studentsignedinUser.delete()
+                                console.log(companyData.val().value)
                                 dispatch(signIn({
                                     uid:userid,
                                     ...user
                                 }))
                                 history.push("/company")
                             }
-                            else{
+                            else if(val=== "Admin"){
+                                dispatch(signIn({
+                                    uid:userid,
+                                    ...user
+                                }))
                                 history.push("/admin")
+                            }
+                            
+                            }
+                            else{
+                                signedinUser.delete()
+                                alert("User not found")
                             }
                         })
 

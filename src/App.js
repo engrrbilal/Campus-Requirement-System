@@ -22,6 +22,10 @@ class App extends Component {
         }
     });
 }
+logOut =()=>{
+  window.location.reload()
+  history.push('/')
+}
   render() {
     return (
       <div >
@@ -31,7 +35,7 @@ class App extends Component {
                 title={"Campus Recuirement System"}
                 iconElementLeft={<IconButton></IconButton>}
                 iconElementRight={this.state.loggedIn? <RaisedButton primary={true}
-                    label="Sign out" onClick={() => firebase.auth().signOut().then(()=>history.push('/'))} 
+                label="Sign out" onClick={() => firebase.auth().signOut().then(this.logOut())} 
                 />:<FlatButton label="Login" onClick={() => history.push('/')}/>}
            />
             <switch>

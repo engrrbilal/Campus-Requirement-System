@@ -134,6 +134,7 @@ class Admin extends React.Component{
       }
       deleteJob = () =>{
         this.props.jobs.map((job,index)=>{
+          // console.log(job.uid)
           if(job===this.state.job){
         console.log("companyUid : ",job.uid)
         console.log("jobPushKey : ",job.dataPushKey)
@@ -188,7 +189,6 @@ class Admin extends React.Component{
             <FlatButton
               label="Delete"
               primary={true}
-              keyboardFocused={true}
               onClick={this.deleteJob}
             />,
           ];
@@ -201,7 +201,6 @@ class Admin extends React.Component{
             <FlatButton
               label="Delete"
               primary={true}
-              keyboardFocused={true}
               onClick={this.deleteCompany}
             />,
           ];
@@ -214,7 +213,6 @@ class Admin extends React.Component{
             <FlatButton
               label="Delete"
               primary={true}
-              keyboardFocused={true}
               onClick={this.deleteStudent}
             />,
           ];
@@ -259,6 +257,7 @@ class Admin extends React.Component{
                                 if(company === this.state.company){
                                   let createdDate = company.createdAt
                                   let createdAt = createdDate.toString("MMM dd")
+                                  console.log(createdAt)
                                 return (<div>
                                     <p>{`Name: ${company.fullName}`}</p>
                                     <p>{`Email: ${company.email}`}</p>
@@ -274,7 +273,7 @@ class Admin extends React.Component{
                         <List>
                             <Subheader>Jobs Posted</Subheader>
                             {(this.props.jobs)?this.props.jobs.map((job,index)=>{
-                                
+                                // console.log(job)
                                 return (
                                       <ListItem key={index}
                                           primaryText={job.position}
@@ -295,9 +294,10 @@ class Admin extends React.Component{
                             {this.props.jobs.map((job,index)=>{
                                 if(job === this.state.job){
                                 return (<div>
+                                    <p>{`Company: ${job.displayName}`}</p>
                                     <p>{`Position: ${job.position}`}</p>
                                     <p>{`Salary: ${job.salary}`}</p>
-                                    <p>{`Last Date to apply: ${job.maxDate}`}</p>
+                                    <p>{`Last Date to apply: ${job.Day}/${job.Month +1}/${job.Year}`}</p>
                                     </div>
                             )}})}
                         </Dialog>

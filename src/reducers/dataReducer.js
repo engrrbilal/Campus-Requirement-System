@@ -2,17 +2,34 @@ const dataReducerDefaultState = {
     studentData:[],
     companyData:[],
     jobPost:[],
-    jobData:[]
+    jobData:[],
+    studentProfile:[],
+    updateData:[]
 }
 
 export default (state = dataReducerDefaultState, action) => {
     switch (action.type) {
 
-        case 'STUDENT-DATA':
-        return ({
-            ...state,
-                studentData:action.data
-        })
+            case 'STUDENT-DATA':
+            return ({
+                ...state,
+                    studentData:action.data
+            })
+            case 'DELETE-STUDENT':
+            return ({
+                ...state,
+                deleteStudent:action.data
+            })
+            case 'STUDENT-PROFILE-DATA':
+            return ({
+                ...state,
+                studentProfile:action.data
+            })
+            case 'UPDATE-STUDENT':
+            return({
+                ...state,
+                updateData:action.updates
+                })
             case 'COMPANY-DATA':
             return ({
                 ...state,
@@ -55,11 +72,6 @@ export default (state = dataReducerDefaultState, action) => {
             return ({
                 ...state,
                 deleteJOb:action.data
-            })
-            case 'DELETE-STUDENT':
-            return ({
-                ...state,
-                deleteStudent:action.data
             })
         default:
             return state;

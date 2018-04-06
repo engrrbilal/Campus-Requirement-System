@@ -38,7 +38,6 @@ const styles = {
   },
 };
 
-
 class Login extends React.Component{
   
     constructor(props){
@@ -77,9 +76,7 @@ class Login extends React.Component{
             error:"Auth error"
           })
         }, 6000);
-
         }
-        
     }
   renderButton(){
     if (this.state.loading) {

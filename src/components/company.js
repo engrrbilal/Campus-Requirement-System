@@ -1,12 +1,12 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import dataReducer from '../reducers/dataReducer'
-import {getStudentsData,startJobPost,getCompanyJobsData} from '../actions/dataActions'
+import {getStudentsData,startJobPost,getCompanyJobsData,startDeleteJob,getJobsData} from '../actions/dataActions'
 import {connect} from 'react-redux'
 import '../App.css';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-import DropDownMenu from 'material-ui/DropDownMenu';
+import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DatePicker from 'material-ui/DatePicker';
 import Toggle from 'material-ui/Toggle';
@@ -16,6 +16,7 @@ import {List, ListItem} from 'material-ui/List';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Subheader from 'material-ui/Subheader';
 import { colors } from 'material-ui/styles';
+import { red100 ,indigo500} from 'material-ui/styles/colors';
 
 const styles = {
     headline: {
@@ -30,6 +31,10 @@ const styles = {
     customWidth: {
         width: 350,
       },
+      customContentStyle : {
+        width: 450,
+        maxWidth: 'none',
+      }
   };
   const optionsStyle = {
     maxWidth: 255,
@@ -40,42 +45,46 @@ class Company extends React.Component{
         super(props);
         const maxDate = new Date();
         maxDate.setMonth(maxDate.getMonth() + 1);
-          
+          console.log("maxdate",maxDate)
         this.state = {
             slideIndex: 0,
             open:false,
-            displayName:'',
+            open2:false,
+            displayName:'company',
             position:'Junior Developer',
             salary:'Between 20000 and 30000',
+            educationValue:'Bachelor',
+            experienceValue:'LessThanYear',
+            job:"",
             maxDate: maxDate,
             autoOk: false,
           };
+          // console.log(this.state.maxDate)
         }
-        componentWillMount(){
+        componentWillMount(props){
           {this.props.getCompanyJobsData({
             job:"from company job data"
           })}
+          {this.props.getJobsData({
+            job:"From Student retrieve jobs Dispatch"
+        })}
           {this.props.getStudentsData({
             comp:"From Company Dispatch"
           })}
-          firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-              this.setState({
-                displayName:user.displayName
-              })
-              console.log(user.displayName)
-            } 
-        });
+          console.log(this.props)
+          
         } 
-        jobPosting(){
+        jobPosting = () =>{
           let lastDate=this.state.maxDate
           let Day = lastDate.getDate();
           let Month = lastDate.getMonth();
           let Year = lastDate.getFullYear();
             this.props.startJobPost({
-              displayName:this.state.displayName,
+              displayName:'this.state.displayName',
               position:this.state.position,
               salary:this.state.salary,
+              educationValue:this.state.educationValue,
+              experienceValue:this.state.experienceValue,
               Day:Day,
               Month:Month,
               Year:Year
@@ -90,7 +99,6 @@ class Company extends React.Component{
           });
         };
         handleChangeMaxDate = (event, date) => {
-          console.log(date)
             this.setState({
               maxDate: date
             });
@@ -102,7 +110,9 @@ class Company extends React.Component{
           handleClose = () => {
             this.setState({open: false});
           };
-          
+          handleCloseJob = () => {
+            this.setState({open2: false});
+          };
           jobData(position){
               return(
                 console.log("jobs",position)
@@ -112,6 +122,40 @@ class Company extends React.Component{
           studentApplyData(){
             this.props.jobs
           }
+          sendJob(job){
+            console.log(job)
+            this.setState({
+                job: job,
+                open2:true
+            })
+          }
+          deleteJob = () =>{
+            this.props.allJobs.map((job,index)=>{
+              console.log("job : ",job)
+              console.log("companyUid : ",job.uid)
+              console.log("jobPushKey : ",job.dataPushKey)
+              if(job.position===this.state.job.position){
+            console.log("companyUid : ",job.uid)
+            console.log("jobPushKey : ",job.dataPushKey)
+                  this.setState({
+                    companyUid:job.uid,
+                    jobPushKey:job.dataPushKey,
+                    open2:false
+                  })
+                  setTimeout(() => {
+                    if(this.state.companyUid){
+                        this.applyDispatchJob()
+                    }
+                }, 500)  
+                }
+            })      
+        }
+        applyDispatchJob(){
+          this.props.startDeleteJob({
+              companyUid:this.state.companyUid,
+              jobPushKey:this.state.jobPushKey,
+          })
+        }
         
     render(){
         const actions = [
@@ -124,19 +168,28 @@ class Company extends React.Component{
               label="Job Post"
               primary={true}
               keyboardFocused={true}
-              onClick={this.jobPosting.bind(this)}
+              onClick={this.jobPosting}
             />,
           ];
           const actions2 = [
             <FlatButton
-              label="ok"
+              label="Ok"
               primary={true}
-              keyboardFocused={true}
               onClick={this.handleClose}
             />,
-            
           ];
-
+          const actions3 = [
+            <FlatButton
+              label="Cancel"
+              primary={true}
+              onClick={this.handleCloseJob}
+            />,
+            <FlatButton
+              label="Delete"
+              secondary={true}
+              onClick={this.deleteJob}
+            />,
+          ];
         return (
             <div >
                 <div className="companyBackground" style={{width:"100%",height:900}}>
@@ -152,16 +205,16 @@ class Company extends React.Component{
                     onChangeIndex={this.handleChange}
                     >
                     <div style={styles.slide}>
-                    <RaisedButton label="Create Job" onClick={()=>this.handleOpen()} />
+                    <RaisedButton label="Create Job" primary={true} style={{marginLeft:15}} onClick={()=>this.handleOpen()} />
                         <Dialog
-                            title="Create"
+                            title={<p style={{textAlign:"center"}}>Create</p>}
+                            contentStyle={styles.customContentStyle}
                             actions={actions}
                             modal={true}
-                            // contentStyle={customContentStyle}
                             open={this.state.open}                  
                         >
                         <h2 style={styles.headline}>New Job</h2>
-                        <DropDownMenu
+                        <SelectField floatingLabelText="Education"
                             value={this.state.position}
                             onChange={(event, index, value) => this.setState({
                             position:value
@@ -175,8 +228,8 @@ class Company extends React.Component{
                         <MenuItem value='Manager' primaryText="Manager" />
                         <MenuItem value='Intern' primaryText="Intern" />
                         <MenuItem value='Accountant' primaryText="Accountant" />
-                        </DropDownMenu><br/>
-                        <DropDownMenu
+                        </SelectField><br/>
+                        <SelectField floatingLabelText="Education"
                             value={this.state.salary}
                             onChange={(event, index, value) => this.setState({
                             salary:value
@@ -190,7 +243,37 @@ class Company extends React.Component{
                         <MenuItem value='Between 30000 and 50000' primaryText="Between 30000 and 50000" />
                         <MenuItem value='Between 50000 and 100000' primaryText="Between 50000 and 100000" />
                         <MenuItem value='More than 100000' primaryText="More than 100000" />
-                        </DropDownMenu><br/>
+                        </SelectField><br/>
+                        <SelectField floatingLabelText="Education"
+                          value={this.state.educationValue}
+                          onChange={(event, index, value) => this.setState({
+                            educationValue:value
+                          })}
+                          // style={styles.customWidth}
+                          autoWidth={false}
+                        >
+                        <h3 style={{alignItems:"center"}}>Education</h3>
+                        <MenuItem value='PHD' primaryText="PHD" />
+                        <MenuItem value='Master' primaryText="Master" />
+                        <MenuItem value='Bachelor' primaryText="Bachelor" />
+                        <MenuItem value='Inter' primaryText="inter" />
+                        <MenuItem value='Matric' primaryText="Matric" />
+                        </SelectField>
+                        <br />
+                        <SelectField floatingLabelText="Experience"
+                          value={this.state.experienceValue}
+                          onChange={(event, index, value) => this.setState({
+                            experienceValue:value
+                          })}
+                          // style={styles.customWidth}
+                          autoWidth={false}
+                        >
+                          <MenuItem value='LessThanYear' primaryText="< 1year" />
+                          <MenuItem value='One Year' primaryText="1 Year" />
+                          <MenuItem value='Two year' primaryText="2 Year" />
+                          <MenuItem value='Three Year' primaryText="3 Year" />
+                          <MenuItem value='MoreThanThree' primaryText="3 Year >" />
+                        </SelectField><br/>
                         <DatePicker
                             onChange={this.handleChangeMaxDate}
                             autoOk={this.state.autoOk}
@@ -202,6 +285,7 @@ class Company extends React.Component{
                         <div>
                         <Subheader>Previous Jobs Posted</Subheader>
                         {this.props.jobs?Object.keys(this.props.jobs).map((job,index)=>{
+                          // console.log(this.props.jobs[job])
                             let studentUid = this.props.jobs[job].jobApplied
                             return (
                                 <div>
@@ -256,14 +340,38 @@ class Company extends React.Component{
                                                     }
                                                   }):<p style={{marginLeft:20 ,color:"red"}}>No student apply till yet!</p>
                                                 }
+                                              </div>,
+                                              <div>
+                                                <RaisedButton label="Delete Job" secondary={true} style={{marginLeft:35}} onClick={this.sendJob.bind(this,this.props.jobs[job])}/>
+                                                <Dialog
+                                                  title="Delete Job"
+                                                  actions={actions3}
+                                                  modal={false}
+                                                  open={this.state.open2}
+                                                  onRequestClose={this.handleCloseJob}
+                                                >
+                                                  {
+                                                    this.props.jobs.map((job,index)=>{
+                                                      if(job === this.state.job){
+                                                        // console.log(job)
+                                                      return (<p style={{color:"red"}} key={index}>
+                                                                 Are you sure ? you want to delete the {`${job.position}`} Job
+                                                              </p>
+                                                  )}
+                                                  })}
+                                              </Dialog>
                                               </div>
+                                              
                                             ]}
                                       />
                                 </List>
                                 </div>
                             )
                         }):
-                        <p style={{marginLeft:20 ,color:"red"}}>No Job posted till yet</p>
+                        <div>
+                            <Divider></Divider>
+                            <p style={{marginLeft:15 ,color:"red"}}>No Job posted till yet</p>
+                        </div>
                       }
                      </div>
                     </div>
@@ -354,12 +462,15 @@ const mapStateToProps = (state) => {
     return{
         students: state.dataReducer.studentData,
         jobs:state.dataReducer.companyJobData,
+        allJobs: state.dataReducer.jobData,
     }
   }
   const mapDispatchToProp = (dispatch) =>({
     getCompanyJobsData: (test1) => dispatch(getCompanyJobsData(test1)),
     getStudentsData: (test) => dispatch(getStudentsData(test)),
-    startJobPost:(jobPost) => dispatch(startJobPost(jobPost))
+    startJobPost:(jobPost) => dispatch(startJobPost(jobPost)),
+    getJobsData: (test) => dispatch(getJobsData(test)),
+    startDeleteJob: (data) => dispatch(startDeleteJob(data)),
   })
   
   
