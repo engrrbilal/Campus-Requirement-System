@@ -10,6 +10,41 @@ import Student from './components/student';
 import Company from './components/company';
 import Admin from './components/Admin';
 
+function PrivateRoute1({ component: Component, authed, ...rest }) {
+  return (
+      <Route
+          {...rest}
+          render={(props) => authed === true
+              ? <Component {...props} />
+              : <Redirect to={{ pathname: '/', state: { from: props.location } }} />}
+      />
+  )
+}
+
+
+function PrivateRoute2({ component: Component, authed, ...rest }) {
+  return (
+      <Route
+          {...rest}
+          render={(props) => authed === true
+              ? <Component {...props} />
+              : <Redirect to={{ pathname: '/', state: { from: props.location } }} />}
+      />
+  )
+}
+
+
+function PrivateRoute3({ component: Component, authed, ...rest }) {
+  return (
+      <Route
+          {...rest}
+          render={(props) => authed === true
+              ? <Component {...props} />
+              : <Redirect to={{ pathname: '/', state: { from: props.location } }} />}
+      />
+  )
+}
+
 class App extends Component {
   constructor(props){
     super(props);
@@ -24,6 +59,11 @@ class App extends Component {
             that.setState({
                 authed: true
             })
+            let type = localStorage.getItem("type")
+            let convertype = JSON.parse(type)
+            if (convertype !== null) {
+                history.push(convertype)
+            }
         }
         else {
             console.log(user)
@@ -31,17 +71,17 @@ class App extends Component {
                 authed: false,
             })
         }
+        console.log(this.state.authed)
     });
 }
 logOut =()=>{
   window.location.reload()
   history.push('/')
+  localStorage.clear()
 }
   render() {
     return (
       <div >
-          <Router history={history}>
-          <div>
           <AppBar
                 title={"Campus Recuirement System"}
                 iconElementLeft={<IconButton></IconButton>}
@@ -49,14 +89,14 @@ logOut =()=>{
                 label="Sign out" onClick={() => firebase.auth().signOut().then(this.logOut())} 
                 />:<FlatButton label="Login" onClick={() => history.push('/')}/>}
            />
+          <Router history={history}>
             <switch>
               <Route exact path="/" component={Login}/>
               <Route path="/signup" component={Signup} />
-              <Route path="/admin" component={Admin}/>
-              <Route path="/student" component={Student} />
-              <Route path="/company" component={Company} />
+              <PrivateRoute1  authed={this.state.authed} path="/admin" component={Admin}/>
+              <PrivateRoute2 authed={this.state.authed} path="/student" component={Student} />
+              <PrivateRoute3 authed={this.state.authed} path="/company" component={Company} />
             </switch>
-        </div>
       </Router>
       </div>
     );

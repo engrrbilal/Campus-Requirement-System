@@ -44,13 +44,13 @@ class Company extends React.Component{
     constructor(props){
         super(props);
         const maxDate = new Date();
-        maxDate.setMonth(maxDate.getMonth() + 1);
+        maxDate.setMonth(maxDate.getMonth() +1);
           console.log("maxdate",maxDate)
         this.state = {
             slideIndex: 0,
             open:false,
             open2:false,
-            displayName:'company',
+            displayName:'',
             position:'Junior Developer',
             salary:'Between 20000 and 30000',
             educationValue:'Bachelor',
@@ -62,6 +62,13 @@ class Company extends React.Component{
           // console.log(this.state.maxDate)
         }
         componentWillMount(props){
+          firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.setState({
+                  displayName:user.displayName
+                })
+            }
+        });
           {this.props.getCompanyJobsData({
             job:"from company job data"
           })}
@@ -76,7 +83,6 @@ class Company extends React.Component{
         componentDidMount(){
           localStorage.setItem("type", JSON.stringify("/company"))
         }
-        
         jobPosting = () =>{
           let lastDate=this.state.maxDate
           let Day = lastDate.getDate();
@@ -194,10 +200,10 @@ class Company extends React.Component{
             />,
           ];
         return (
-            <div >
+            <div>
               <div style={{height:"40px",color:"blue",backgroundColor:"lightBlue",marginTop:"-24px"}}>
                 <center>
-                  <p style={{fontSize:"24px"}}>{`Welcome ${firebase.auth().currentUser.displayName}`}</p>
+                  <p style={{fontSize:"24px"}}>{`Welcome ${this.state.displayName}`}</p>
                 </center>
               </div>
                 <div className="companyBackground" style={{width:"100%",maxHeight:"100%",minHeight:"860px"}}>

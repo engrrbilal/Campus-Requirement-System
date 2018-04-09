@@ -45,6 +45,7 @@ class Admin extends React.Component{
             autoOk: false,
             job:'',
             company:'',
+            displayName:'',
             companyUid:'',
             jobPushKey:'',
             student:'',
@@ -53,6 +54,13 @@ class Admin extends React.Component{
           };
     }
     componentWillMount(){
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            this.setState({
+              displayName:user.displayName
+            })
+        }
+    });
         {this.props.getCompaniesData({
           comp:"From Admin Dispatch"
         })}
@@ -223,7 +231,7 @@ class Admin extends React.Component{
             <div className="adminBackground" style={{width:"100%",height:900}}>
             <div style={{height:"40px",color:"blue",backgroundColor:"lightBlue",marginTop:"-24px"}}>
                 <center>
-                  <p style={{fontSize:"24px"}}>{`Welcome ${firebase.auth().currentUser.displayName}`}</p>
+                  <p style={{fontSize:"24px"}}>{`Welcome ${this.state.displayName}`}</p>
                 </center>
               </div>
                 <div>

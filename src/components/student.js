@@ -46,6 +46,7 @@ class Student extends React.Component{
             open:false,
             open2:false,
             studentUid:'',
+            displayName:'',
             job:'',
             company:'',
             companyUid:'',
@@ -80,7 +81,8 @@ class Student extends React.Component{
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({ 
-                    studentUid: user.uid
+                    studentUid: user.uid,
+                    displayName:user.displayName
                  });
             } else {
                 this.setState({ studentUid:''});
@@ -97,7 +99,19 @@ class Student extends React.Component{
                     studentContactNo: this.props.student.studentContactNo
                   })
             }
-            },50)
+            },500)
+    }
+    componentWillReceiveProps(props){
+        if(props.student.fullName){
+            this.setState({
+                fullName: props.student.fullName,
+                educationValue: props.student.educationValue,
+                experienceValue: props.student.experienceValue,
+                majorValue: props.student.majorValue,
+                studentGrade: props.student.studentGrade,
+                studentContactNo: props.student.studentContactNo
+              })
+        }
     }
     componentDidMount(){
         localStorage.setItem("type", JSON.stringify("/student"))
@@ -211,7 +225,7 @@ class Student extends React.Component{
             <div className="studentBackground" style={{width:"100%",minHeight:900,maxHeight:"100%"}}>
             <div style={{height:"40px",color:"blue",backgroundColor:"lightBlue",marginTop:"-24px"}}>
                 <center>
-                  <p style={{fontSize:"24px"}}>{`Welcome ${firebase.auth().currentUser.displayName}`}</p>
+                  <p style={{fontSize:"24px"}}>{`Welcome ${this.state.displayName}`}</p>
                 </center>
               </div>
             <div>

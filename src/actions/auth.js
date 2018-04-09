@@ -35,20 +35,20 @@ export const startSignUp = (userData = {}) =>{
            firebase.auth().currentUser.updateProfile({displayName:fullName})
            console.log(type.value)
            if(type.value === "Student"){
-            history.push('/student')
-            firebase.database().ref(`Students/${uid}`).set(student)
-            dispatch(signUp({
-                uid:uid,
-                ...student
-            }))
+               firebase.database().ref(`Students/${uid}`).set(student)
+            //    dispatch(signUp({
+            //        uid:uid,
+            //        ...student
+            //     }))
+                history.push('/student')
            }
            else if(type.value === "Company"){
-               history.push('/company');
-            firebase.database().ref(`Companies/${uid}`).set(company)
-            dispatch(signUp({
-                uid:uid,
-                ...company
-            }))
+               firebase.database().ref(`Companies/${uid}`).set(company)
+            //    dispatch(signUp({
+            //        uid:uid,
+            //        ...company
+            //     }))
+                history.push('/company');
                  
            }
         }).catch(console.log("error"))

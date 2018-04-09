@@ -107,14 +107,14 @@ class Signup extends React.Component {
             error:"Auth error"
           })
         }, 3000)
-      //   setTimeout(() => {
-      //   if(this.state.value === "Company"){
-      //     history.push("/company")
-      //   }
-      //   else{
-      //     history.push("/student")
-      //   }
-      // }, 1000)
+        setTimeout(() => {
+        if(this.state.value === "Company"){
+          history.push("/company")
+        }
+        else if(this.state.value === "Student"){
+          history.push("/student")
+        }
+      }, 2000)
       }
   }
   handleOpen = () => {

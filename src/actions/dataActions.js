@@ -8,7 +8,6 @@ export const studentsData = (data) => ({
   });
   export const getStudentsData = (test={}) => {
     return (dispatch) => {
-
       firebase.database().ref("Students").on('value',(snapshot) => {
         const data = [];
   
@@ -60,15 +59,20 @@ export const startUpdateStudent= (updates={}) => {
       studentContactNo='',
       } = updates;
     console.log(updates)
-    if(fullName && studentContactNo){
-      return firebase.database().ref(`Students/${updates.id}`).update(updates).then(() => {
-        dispatch(updateStudent(updates));
-        alert("Your Profile has updated !")
-      })
-    }
-    else{
-      alert("Please enter something!")
-    }
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        if(fullName && studentContactNo){
+          return firebase.database().ref(`Students/${updates.id}`).update(updates).then(() => {
+            dispatch(updateStudent(updates));
+            alert("Your Profile has updated !")
+          })
+        }
+        else{
+          alert("Please enter something!")
+        }
+      }
+
+  })
   };
 };
   // COMPANIES-DATA
@@ -242,11 +246,11 @@ export const startJobApply = (jobData = {}) =>{
                         Month = data.Month+1;
                         Year = data.Year
                         console.log(Day,Month,Year)
-                        if((day <=Day && month > Month && year>=Year)||(day>=Day && month >= Month && year>=Year)){
-                          console.log("expired")
-                          alert("Sory this Job has expired !")
-                        }
-                        else if(jobApplied){
+                        // if((day <=Day && month > Month && year>=Year)||(day>Day && month >= Month && year>=Year)){
+                        //   console.log("expired")
+                        //   alert("Sory this Job has expired !")
+                        // }
+                        if(jobApplied){
                             for(let key in jobApplied){
                               student=jobApplied[key]
                             if(studentUid  === student.uid){
@@ -258,6 +262,8 @@ export const startJobApply = (jobData = {}) =>{
                             }
                             
                           }
+
+                        }
                           if(apply){
                             alert("You have allready applied for this job !")
                           }
@@ -267,7 +273,6 @@ export const startJobApply = (jobData = {}) =>{
                               dispatch(jobApply({obj}))
                               alert("You have applied for this job successfully!")
                           }).catch((e)=>("Error while applying ",e))
-                          }
                           }
                           
                       })
