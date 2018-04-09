@@ -106,7 +106,15 @@ class Signup extends React.Component {
             loading: false,
             error:"Auth error"
           })
-        }, 5000)
+        }, 3000)
+      //   setTimeout(() => {
+      //   if(this.state.value === "Company"){
+      //     history.push("/company")
+      //   }
+      //   else{
+      //     history.push("/student")
+      //   }
+      // }, 1000)
       }
   }
   handleOpen = () => {
@@ -276,6 +284,7 @@ handleChange = (event, index, value) => this.setState({
             <MenuItem value='Bachelor' primaryText="Bachelor" />
             <MenuItem value='Inter' primaryText="inter" />
             <MenuItem value='Matric' primaryText="Matric" />
+            <MenuItem value='Null' primaryText="Null" />
             </SelectField>
             <br />
             <SelectField floatingLabelText="Experience"
@@ -287,6 +296,7 @@ handleChange = (event, index, value) => this.setState({
             // style={styles.customWidth}
             autoWidth={false}
           >
+            <MenuItem value='fresh' primaryText="Fresh" />
             <MenuItem value='LessThanYear' primaryText="< 1year" />
             <MenuItem value='One Year' primaryText="1 Year" />
             <MenuItem value='Two year' primaryText="2 Year" />
@@ -306,6 +316,8 @@ handleChange = (event, index, value) => this.setState({
               <MenuItem value='A' primaryText="A" />
               <MenuItem value='B' primaryText="B" />
               <MenuItem value='C' primaryText="C" />
+              <MenuItem value='D' primaryText="D" />
+              <MenuItem value='Not interested' primaryText="Not interested" />
             </SelectField>
             <br/>
             <SelectField floatingLabelText="Major In"

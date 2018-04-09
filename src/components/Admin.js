@@ -62,8 +62,10 @@ class Admin extends React.Component{
         {this.props.getStudentsData({
           stu:"From Company Dispatch"
         })}
-        localStorage.setItem("type", JSON.stringify("/admin"))
       } 
+      componentDidMount(){
+        localStorage.setItem("type", JSON.stringify("/admin"))
+      }
       handleChange = (value) => {
         this.setState({
           slideIndex: value,
@@ -219,6 +221,11 @@ class Admin extends React.Component{
           ];
         return (
             <div className="adminBackground" style={{width:"100%",height:900}}>
+            <div style={{height:"40px",color:"blue",backgroundColor:"lightBlue",marginTop:"-24px"}}>
+                <center>
+                  <p style={{fontSize:"24px"}}>{`Welcome ${firebase.auth().currentUser.displayName}`}</p>
+                </center>
+              </div>
                 <div>
                     <Tabs
                     onChange={this.handleChange}

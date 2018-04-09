@@ -60,10 +60,15 @@ export const startUpdateStudent= (updates={}) => {
       studentContactNo='',
       } = updates;
     console.log(updates)
-    return firebase.database().ref(`Students/${updates.id}`).update(updates).then(() => {
-      dispatch(updateStudent(updates));
-      alert("Your Profile has updated !")
-    });
+    if(fullName && studentContactNo){
+      return firebase.database().ref(`Students/${updates.id}`).update(updates).then(() => {
+        dispatch(updateStudent(updates));
+        alert("Your Profile has updated !")
+      })
+    }
+    else{
+      alert("Please enter something!")
+    }
   };
 };
   // COMPANIES-DATA
@@ -76,19 +81,26 @@ export const getCompaniesData = (test2={}) => {
     
     firebase.database().ref("Companies").on('value',(snapshot) => {
       const compData = [];
-      let data = snapshot.val()
-      for (var key in data) {
-        let obj = data[key];
-      if(obj.value !== "Admin"){
-        console.log(obj.value)
-        // snapshot.forEach((childSnapshot) => {
-          compData.push({
-            ...obj
-          });
+      snapshot.forEach((childSnapshot) => {
+        compData.push({
+          id: childSnapshot.key,
+          ...childSnapshot.val()
+        });
+      });
+      // let data = snapshot.val()
+      // for (var key in data) {
+      //   let obj = data[key];
+      // if(obj.value !== "Admin"){
+      //   console.log(obj.value)
+      //   // snapshot.forEach((childSnapshot) => {
+      //     compData.push({
+      //       id:key,
+      //       ...obj
+      //     });
         // });
         dispatch(companiesData(compData))
-      }
-    }
+      // }
+    // }
     })
   };
 };
@@ -230,11 +242,11 @@ export const startJobApply = (jobData = {}) =>{
                         Month = data.Month+1;
                         Year = data.Year
                         console.log(Day,Month,Year)
-                        // if((day <=Day && month > Month && year>=Year)||(day>=Day && month >= Month && year>=Year)){
-                        //   console.log("expired")
-                        //   alert("Sory this Job has expired !")
-                        // }
-                        if(jobApplied){
+                        if((day <=Day && month > Month && year>=Year)||(day>=Day && month >= Month && year>=Year)){
+                          console.log("expired")
+                          alert("Sory this Job has expired !")
+                        }
+                        else if(jobApplied){
                             for(let key in jobApplied){
                               student=jobApplied[key]
                             if(studentUid  === student.uid){
@@ -246,7 +258,6 @@ export const startJobApply = (jobData = {}) =>{
                             }
                             
                           }
-                          }
                           if(apply){
                             alert("You have allready applied for this job !")
                           }
@@ -257,6 +268,8 @@ export const startJobApply = (jobData = {}) =>{
                               alert("You have applied for this job successfully!")
                           }).catch((e)=>("Error while applying ",e))
                           }
+                          }
+                          
                       })
         }) 
   }   
@@ -271,7 +284,10 @@ export const startDeleteCompany = (data={}) => {
   return (dispatch) => {
             firebase.database().ref(`Companies/${data.companyUid}`).remove()
             .then(()=>{
-              alert("Company has removed sucessfully!")
+              firebase.database().ref(`Jobs/${data.companyUid}`).remove()
+              .then(()=>{
+                alert("Company and its jobs has removed sucessfully!")
+              })
               dispatch(deleteCompany(data));
             }).catch((e)=>console.log("Error while removing company",e) )
   };

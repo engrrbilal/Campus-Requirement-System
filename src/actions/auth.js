@@ -13,7 +13,6 @@ export const startSignUp = (userData = {}) =>{
         const {
             fullName='',
             email='anonymous@gmail.com',
-            uid='',
             password='',
             gender='',
             value='',
@@ -34,21 +33,23 @@ export const startSignUp = (userData = {}) =>{
          .then( data =>{
            let uid = data.uid
            firebase.auth().currentUser.updateProfile({displayName:fullName})
+           console.log(type.value)
            if(type.value === "Student"){
+            history.push('/student')
             firebase.database().ref(`Students/${uid}`).set(student)
             dispatch(signUp({
                 uid:uid,
                 ...student
             }))
-            history.push('/student')
            }
            else if(type.value === "Company"){
+               history.push('/company');
             firebase.database().ref(`Companies/${uid}`).set(company)
             dispatch(signUp({
                 uid:uid,
                 ...company
             }))
-                 history.push('/company');
+                 
            }
         }).catch(console.log("error"))
     }   
@@ -66,8 +67,20 @@ export const startSignUp = (userData = {}) =>{
         firebase.auth().signInWithEmailAndPassword(user.email, user.password)
         .then((signedinUser) => {
             let userid = signedinUser.uid
-            console.log(userid)
-                firebase.database().ref(`Students/${userid}/`).once('value')
+            firebase.database().ref(`Admin/${userid}/`).once('value')
+                .then((adminData) => {
+                    if(adminData.val()!== null){
+                        const val = adminData.val().value
+                        if(val=== "Admin"){
+                            dispatch(signIn({
+                                uid:userid,
+                                ...user
+                            }))
+                                history.push("/admin")
+                        }
+                    }
+                    else{
+                        firebase.database().ref(`Students/${userid}/`).once('value')
                 .then((studentData) => {
                     if(studentData.val()!== null){
                         const val = studentData.val().value
@@ -93,14 +106,6 @@ export const startSignUp = (userData = {}) =>{
                                 }))
                                 history.push("/company")
                             }
-                            else if(val=== "Admin"){
-                                dispatch(signIn({
-                                    uid:userid,
-                                    ...user
-                                }))
-                                history.push("/admin")
-                            }
-                            
                             }
                             else{
                                 signedinUser.delete()
@@ -111,8 +116,8 @@ export const startSignUp = (userData = {}) =>{
                     }
 
             })
-            
-
+                    }
         })
+    })
     }       
 }

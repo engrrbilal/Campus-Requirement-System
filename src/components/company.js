@@ -10,7 +10,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DatePicker from 'material-ui/DatePicker';
 import Toggle from 'material-ui/Toggle';
-import {Dialog,paper,RaisedButton,FlatButton,Divider} from 'material-ui'
+import {Dialog,paper,RaisedButton,FlatButton,Divider,AppBar,IconButton} from 'material-ui'
 
 import {List, ListItem} from 'material-ui/List';
 import ActionInfo from 'material-ui/svg-icons/action/info';
@@ -72,16 +72,18 @@ class Company extends React.Component{
             comp:"From Company Dispatch"
           })}
           console.log(this.props)
+        }
+        componentDidMount(){
           localStorage.setItem("type", JSON.stringify("/company"))
-          
-        } 
+        }
+        
         jobPosting = () =>{
           let lastDate=this.state.maxDate
           let Day = lastDate.getDate();
           let Month = lastDate.getMonth();
           let Year = lastDate.getFullYear();
             this.props.startJobPost({
-              displayName:'this.state.displayName',
+              displayName:this.state.displayName,
               position:this.state.position,
               salary:this.state.salary,
               educationValue:this.state.educationValue,
@@ -193,7 +195,12 @@ class Company extends React.Component{
           ];
         return (
             <div >
-                <div className="companyBackground" style={{width:"100%",height:900}}>
+              <div style={{height:"40px",color:"blue",backgroundColor:"lightBlue",marginTop:"-24px"}}>
+                <center>
+                  <p style={{fontSize:"24px"}}>{`Welcome ${firebase.auth().currentUser.displayName}`}</p>
+                </center>
+              </div>
+                <div className="companyBackground" style={{width:"100%",maxHeight:"100%",minHeight:"860px"}}>
                     <Tabs
                     onChange={this.handleChange}
                     value={this.state.slideIndex}
@@ -253,12 +260,12 @@ class Company extends React.Component{
                           // style={styles.customWidth}
                           autoWidth={false}
                         >
-                        <h3 style={{alignItems:"center"}}>Education</h3>
                         <MenuItem value='PHD' primaryText="PHD" />
                         <MenuItem value='Master' primaryText="Master" />
                         <MenuItem value='Bachelor' primaryText="Bachelor" />
                         <MenuItem value='Inter' primaryText="inter" />
                         <MenuItem value='Matric' primaryText="Matric" />
+                        <MenuItem value='<Matric' primaryText="<Matric" />
                         </SelectField>
                         <br />
                         <SelectField floatingLabelText="Experience"
@@ -269,6 +276,7 @@ class Company extends React.Component{
                           // style={styles.customWidth}
                           autoWidth={false}
                         >
+                          <MenuItem value='fresh' primaryText="Fresh" />
                           <MenuItem value='LessThanYear' primaryText="< 1year" />
                           <MenuItem value='One Year' primaryText="1 Year" />
                           <MenuItem value='Two year' primaryText="2 Year" />
@@ -335,6 +343,7 @@ class Company extends React.Component{
                                                               primaryText={`Contact No:${studentUid[apply].studentContactNo}`}
                                                               disabled={true}
                                                             />,
+                                                            
                                                           ]}
                                                           />
                                                       )

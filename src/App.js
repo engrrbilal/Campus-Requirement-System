@@ -49,8 +49,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state={
-      authed: false,
-      loggedIn:null
+      authed: null
     }
   }
   componentWillMount() {
@@ -58,8 +57,7 @@ class App extends Component {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             that.setState({
-                authed: true,
-                loggedIn:true
+                authed: true
             })
             let type = localStorage.getItem("type")
             let convertype = JSON.parse(type)
@@ -67,12 +65,10 @@ class App extends Component {
                 history.push(convertype)
             }
         }
-
         else {
             console.log(user)
             that.setState({
                 authed: false,
-                loggedIn:false
             })
         }
     });
@@ -80,6 +76,7 @@ class App extends Component {
 logOut =()=>{
   window.location.reload()
   history.push('/')
+  localStorage.clear()
 }
   render() {
     return (
@@ -89,7 +86,7 @@ logOut =()=>{
           <AppBar
                 title={"Campus Recuirement System"}
                 iconElementLeft={<IconButton></IconButton>}
-                iconElementRight={this.state.loggedIn? <RaisedButton primary={true}
+                iconElementRight={this.state.authed? <RaisedButton primary={true}
                 label="Sign out" onClick={() => firebase.auth().signOut().then(this.logOut())} 
                 />:<FlatButton label="Login" onClick={() => history.push('/')}/>}
            />

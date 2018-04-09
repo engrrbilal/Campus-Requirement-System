@@ -86,18 +86,22 @@ class Student extends React.Component{
                 this.setState({ studentUid:''});
             }
         });
-        setTimeout(()=>{ this.setState({
-   
-            fullName: this.props.student.fullName,
-            educationValue: this.props.student.educationValue,
-            experienceValue: this.props.student.experienceValue,
-            majorValue: this.props.student.majorValue,
-            studentGrade: this.props.student.studentGrade,
-            studentContactNo: this.props.student.studentContactNo
-          })},3000)
-          localStorage.setItem("type", JSON.stringify("/student"))
+        setTimeout(()=>{ 
+            if(this.props.student.fullName){
+                this.setState({
+                    fullName: this.props.student.fullName,
+                    educationValue: this.props.student.educationValue,
+                    experienceValue: this.props.student.experienceValue,
+                    majorValue: this.props.student.majorValue,
+                    studentGrade: this.props.student.studentGrade,
+                    studentContactNo: this.props.student.studentContactNo
+                  })
+            }
+            },50)
     }
-
+    componentDidMount(){
+        localStorage.setItem("type", JSON.stringify("/student"))
+    }
     handleChange = (value) => {
         this.setState({
           slideIndex: value,
@@ -204,7 +208,12 @@ class Student extends React.Component{
             />,
           ];
         return (
-            <div className="studentBackground" style={{width:"100%",height:900}}>
+            <div className="studentBackground" style={{width:"100%",minHeight:900,maxHeight:"100%"}}>
+            <div style={{height:"40px",color:"blue",backgroundColor:"lightBlue",marginTop:"-24px"}}>
+                <center>
+                  <p style={{fontSize:"24px"}}>{`Welcome ${firebase.auth().currentUser.displayName}`}</p>
+                </center>
+              </div>
             <div>
                 <Tabs
                     onChange={this.handleChange}
@@ -289,7 +298,7 @@ class Student extends React.Component{
                             )}})}
                         </Dialog>
                    </div>
-                    <div>
+                    <div >
                     <Card>
                         <CardHeader
                         title={<p style={{textAlign:"center"}}>Your profile</p>}

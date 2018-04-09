@@ -51,7 +51,8 @@ class Login extends React.Component{
       loggedIn: null
     }
     }
-  componentWillMount(){
+  
+    componentWillMount(){
       firebase.auth().onAuthStateChanged((user) => {
           if (user) {
               this.setState({ 
@@ -75,7 +76,7 @@ class Login extends React.Component{
             loading: false,
             error:"Auth error"
           })
-        }, 6000);
+        }, 8000);
         }
     }
   renderButton(){
