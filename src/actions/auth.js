@@ -29,18 +29,18 @@ export const startSignUp = (userData = {}) =>{
            console.log(type.value)
            if(type.value === "Student"){
                firebase.database().ref(`Students/${uid}`).set(student)
-            //    dispatch(signUp({
-            //        uid:uid,
-            //        ...student
-            //     }))
+               dispatch(signUp({
+                   uid:uid,
+                   ...student
+                }))
                 history.push('/student')
            }
            else if(type.value === "Company"){
                firebase.database().ref(`Companies/${uid}`).set(company)
-            //    dispatch(signUp({
-            //        uid:uid,
-            //        ...company
-            //     }))
+               dispatch(signUp({
+                   uid:uid,
+                   ...company
+                }))
                 history.push('/company');
                  
            }

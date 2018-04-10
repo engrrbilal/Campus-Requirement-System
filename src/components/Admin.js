@@ -345,13 +345,13 @@ class Admin extends React.Component{
                                 if(student === this.state.student){
                                 return (<div>
                                     <p>{`Name: ${student.fullName}`}</p>
-                                    <p>{`Education:${student.educationValue}`}</p>
-                                    <p>{`Experience:${student.experienceValue}`}</p>
-                                    <p>{`Grade:${student.studentGrade}`}</p>
-                                    <p>{`Major In:${student.majorValue}`}</p>
-                                    <p>{`Email: ${student.email}`}</p>
-                                    <p>{`Contact No: ${student.studentContactNo}`}</p>
-                                    <p>{`CreatedAt: ${student.createdAt}`}</p>
+                                    <p>{`Education:${student.educationValue="No data available"}`}</p>
+                                    <p>{`Experience:${student.experienceValue="No data available"}`}</p>
+                                    <p>{`Grade:${student.studentGrade="No data available"}`}</p>
+                                    <p>{`Major In:${student.majorValue="No data available"}`}</p>
+                                    <p>{`Email: ${student.email="No data available"}`}</p>
+                                    <p>{`Contact No: ${student.studentContactNo="No data available"}`}</p>
+                                    <p>{`CreatedAt: ${student.createdAt="No data available"}`}</p>
                                     </div>
                             )}})}
                         </Dialog>

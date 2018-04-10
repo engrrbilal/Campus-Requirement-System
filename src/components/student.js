@@ -55,11 +55,11 @@ class Student extends React.Component{
             slideIndex: 0,
             disabled:true,
             fullName:'',
-            educationValue:'',
-            experienceValue:'',
-            majorValue:'',
-            studentGrade:'',
-            studentContactNo:'',
+            educationValue:'Bachelor',
+            experienceValue:'LessThanYear',
+            majorValue:'Programing',
+            studentGrade:'A',
+            studentContactNo:0,
             update:false
 
         }
@@ -92,14 +92,23 @@ class Student extends React.Component{
             if(this.props.student.fullName){
                 this.setState({
                     fullName: this.props.student.fullName,
-                    educationValue: this.props.student.educationValue,
-                    experienceValue: this.props.student.experienceValue,
-                    majorValue: this.props.student.majorValue,
-                    studentGrade: this.props.student.studentGrade,
-                    studentContactNo: this.props.student.studentContactNo
                   })
             }
             },500)
+            setTimeout(()=>{ 
+                if(this.props.student.educationValue && this.props.student.experienceValue && 
+                    this.props.student.majorValue && this.props.student.studentGrade && this.props.student.studentContactNo
+                ){
+                    this.setState({
+                        educationValue: this.props.student.educationValue,
+                        experienceValue: this.props.student.experienceValue,
+                        majorValue: this.props.student.majorValue,
+                        studentGrade: this.props.student.studentGrade,
+                        studentContactNo: this.props.student.studentContactNo
+                      })
+                }
+                },800)
+            
     }
     componentWillReceiveProps(props){
         if(props.student.fullName){
@@ -187,16 +196,24 @@ class Student extends React.Component{
            this.applyUpdateDispatch()
     }
     applyUpdateDispatch(){
-        this.props.startUpdateStudent({
-            id:this.state.studentUid,
-            fullName:this.state.fullName,
-            displayName:this.state.fullName,
-            educationValue:this.state.educationValue,
-            experienceValue:this.state.experienceValue,
-            majorValue:this.state.majorValue,
-            studentGrade:this.state.studentGrade,
-            studentContactNo:this.state.studentContactNo,
-        })
+        if(this.state.fullName ==="" || this.state.educationValue==='' || this.state.experienceValue==='' || 
+        this.state.studentContactNo===''|| this.state.studentGrade==='' || this.state.majorValue===''){
+            alert("Please fill the form")
+            
+        }
+        else{
+            this.props.startUpdateStudent({
+                id:this.state.studentUid,
+                fullName:this.state.fullName,
+                displayName:this.state.fullName,
+                educationValue:this.state.educationValue,
+                experienceValue:this.state.experienceValue,
+                majorValue:this.state.majorValue,
+                studentGrade:this.state.studentGrade,
+                studentContactNo:this.state.studentContactNo,
+            })
+        }
+       
       }
     render(){
         const actions = [
@@ -338,6 +355,7 @@ class Student extends React.Component{
                                             <MenuItem value='Bachelor' primaryText="Bachelor" />
                                             <MenuItem value='Inter' primaryText="inter" />
                                             <MenuItem value='Matric' primaryText="Matric" />
+                                            <MenuItem value='<Matric' primaryText="<Matric" />
                                             </SelectField>
                                             <br />
                                 <Divider />
@@ -389,7 +407,7 @@ class Student extends React.Component{
                                         <MenuItem value='C' primaryText="C" />
                                 </SelectField>
                                 <Divider></Divider>
-                                        <TextField floatingLabelText="Contact No" value={this.state.studentContactNo} style={styles.style} underlineShow={false}
+                                        <TextField floatingLabelText="Contact No" type="number" value={this.state.studentContactNo} style={styles.style} underlineShow={false}
                                          disabled={this.state.disabled} onChange={(e)=>this.setState({studentContactNo:e.target.value})}/>
                                         <Divider></Divider>
                                         {(this.state.update)?

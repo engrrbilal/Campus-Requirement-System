@@ -52,26 +52,18 @@ export const startUpdateStudent= (updates={}) => {
     const {
       id='',
       fullName='',
-      educationValu='',
-      experienceValue='',
-      majorValue='',
-      studentGrade='',
-      studentContactNo='',
+      educationValu= "",
+      experienceValue= "",
+      majorValue="",
+      studentGrade= "",
+      studentContactNo= "",
       } = updates;
     console.log(updates)
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        if(fullName && studentContactNo){
           return firebase.database().ref(`Students/${updates.id}`).update(updates).then(() => {
             dispatch(updateStudent(updates));
             alert("Your Profile has updated !")
           })
-        }
-        else{
-          alert("Please enter something!")
-        }
-      }
-
   })
   };
 };
@@ -207,12 +199,12 @@ export const startJobApply = (jobData = {}) =>{
                 let data = snap.val()
                 let obj = {
                     fullName: data.fullName,
-                    educationValue: data.educationValue,
-                    experienceValue:data.experienceValue,
-                    studentGrade:data.studentGrade,
-                    majorValue:data.majorValue,
+                    educationValue: data.educationValue = "No data available",
+                    experienceValue:data.experienceValue = "No data available",
+                    studentGrade:data.studentGrade = "No data available",
+                    majorValue:data.majorValue = "No data available",
                     email: data.email,
-                    studentContactNo: data.studentContactNo,
+                    studentContactNo: data.studentContactNo = "No data available",
                     uid:studentUid
                 }
                     let date = new Date()

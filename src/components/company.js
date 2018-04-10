@@ -320,33 +320,39 @@ class Company extends React.Component{
                                                 {
                                                   studentUid?
                                                   Object.keys(studentUid).map((apply,index)=>{
+                                                    const { educationValue: educationValue = 'No data available',
+                                                      experienceValue: experienceValue = 'No data available',
+                                                      studentGrade:studentGrade = 'No data available',
+                                                      majorValue:majorValue = 'No data available',
+                                                      studentContactNo:studentContactNo = 'No data available',
+                                                    } = studentUid[apply]
                                                     if(apply){
                                                       return(
-                                                        <ListItem key={studentUid[apply].fullName}
+                                                        <ListItem key={index}
                                                           primaryText={`Student Apply :${studentUid[apply].fullName}`}
                                                           nestedItems={[
-                                                            <ListItem key={studentUid[apply].educationValue}
-                                                              primaryText={`Education:${studentUid[apply].educationValue}`}
+                                                            <ListItem
+                                                              primaryText={`Education:${educationValue}`}
                                                               disabled={true}
                                                             />,
-                                                            <ListItem key={studentUid[apply].experienceValue}
-                                                              primaryText={`Experience:${studentUid[apply].experienceValue}`}
+                                                            <ListItem
+                                                              primaryText={`Experience:${experienceValue}`}
                                                               disabled={true}
                                                             />,
-                                                            <ListItem key={studentUid[apply].majorValue}
-                                                              primaryText={`Major In:${studentUid[apply].majorValue}`}
+                                                            <ListItem
+                                                              primaryText={`Major In:${majorValue}`}
                                                               disabled={true}
                                                             />,
-                                                            <ListItem key={studentUid[apply].studentGrade}
-                                                              primaryText={`Grade:${studentUid[apply].studentGrade}`}
+                                                            <ListItem
+                                                              primaryText={`Grade:${studentGrade}`}
                                                               disabled={true}
                                                             />,
-                                                            <ListItem key={studentUid[apply].email}
+                                                            <ListItem 
                                                               primaryText={<a href={`mailto:${studentUid[apply].email}`} >{`Email:${studentUid[apply].email}`}</a>}
                                                               disabled={true}
                                                             />,
-                                                            <ListItem key={studentUid[apply].studentContactNo}
-                                                              primaryText={`Contact No:${studentUid[apply].studentContactNo}`}
+                                                            <ListItem 
+                                                              primaryText={`Contact No:${studentContactNo}`}
                                                               disabled={true}
                                                             />,
                                                             
@@ -396,40 +402,44 @@ class Company extends React.Component{
                     <List>
                         <Subheader>Students List</Subheader>
                         {this.props.students.map((student,index)=>{
+                          const { educationValue: educationValue = 'No data available',
+                          experienceValue: experienceValue = 'No data available',
+                          studentGrade:studentGrade = 'No data available',
+                          majorValue:majorValue = 'No data available',
+                          studentContactNo:studentContactNo = 'No data available',
+                        } = student;
                             return (
-                                <div>
-                                <ListItem key={index}
+                                <ListItem 
+                                   key={index}
                                     primaryText={student.fullName} 
                                     nestedItems={[
-                                        <ListItem key={student.educationValue}
-                                          primaryText={`Education:${student.educationValue}`}
+                                  
+                                        <ListItem
+                                          primaryText={`Education:${educationValue}`}
                                           disabled={true}
                                         />,
-                                        <ListItem key={student.experienceValue}
-                                          primaryText={`Experience:${student.experienceValue}`}
+                                        <ListItem
+                                          primaryText={`Experience:${experienceValue}`}
                                           
                                           open={this.state.open}
                                         />,
-                                        <ListItem key={student.studentGrade}
-                                          primaryText={`Grade:${student.studentGrade}`}
-                                          disabled={true}
-                                        />,
-                                        <ListItem key={student.majorValue}
-                                          primaryText={`Major In:${student.majorValue}`}
+                                        <ListItem
+                                          primaryText={`Grade:${studentGrade}`}
                                           disabled={true}
                                         />,
                                         <ListItem
-                                          key={student.email}
+                                          primaryText={`Major In:${majorValue}`}
+                                          disabled={true}
+                                        />,
+                                        <ListItem
                                           primaryText={<a href={`mailto:${student.email}`} >{`Email:${student.email}`}</a>}
                                         />,
                                         <ListItem
-                                          key={student.studentContactNo}
-                                          primaryText={`Contact No:${student.studentContactNo}`}
+                                          primaryText={`Contact No:${studentContactNo}`}
                                           disabled={true}
                                         />,
                                       ]}
                                 />
-                                </div>
                             )
                         })}
                         
