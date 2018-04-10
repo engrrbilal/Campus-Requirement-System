@@ -12,23 +12,16 @@ export const startSignUp = (userData = {}) =>{
     return dispatch =>{
         const {
             fullName='',
-            email='anonymous@gmail.com',
+            email='',
             password='',
             gender='',
             value='',
-            companyContactNo='',
-            educationValue='',
-            experienceValue='',
-            studentGrade='',
-            majorValue='',
-            studentContactNo='',
-            companyAddress='',
             createdAt=0
           } = userData;
           const type = {value}
-          const student = {fullName,email,gender,educationValue,value,
-            experienceValue,studentGrade,majorValue,studentContactNo,createdAt}
-          const company = {fullName,email,value,companyContactNo,companyAddress,createdAt}
+          const student = {fullName,email,gender,value,createdAt}
+          const company = {fullName,email,value,createdAt}
+          console.log(student)
         firebase.auth().createUserWithEmailAndPassword(userData.email,userData.password)
          .then( data =>{
            let uid = data.uid

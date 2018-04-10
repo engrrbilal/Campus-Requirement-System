@@ -105,6 +105,7 @@ class Student extends React.Component{
         if(props.student.fullName){
             this.setState({
                 fullName: props.student.fullName,
+                displayName:props.student.fullName,
                 educationValue: props.student.educationValue,
                 experienceValue: props.student.experienceValue,
                 majorValue: props.student.majorValue,
@@ -189,6 +190,7 @@ class Student extends React.Component{
         this.props.startUpdateStudent({
             id:this.state.studentUid,
             fullName:this.state.fullName,
+            displayName:this.state.fullName,
             educationValue:this.state.educationValue,
             experienceValue:this.state.experienceValue,
             majorValue:this.state.majorValue,
@@ -306,8 +308,8 @@ class Student extends React.Component{
                                 return (<div key={index}>
                                         <p>{`Name: ${company.fullName}`}</p>
                                         <p>{`Email: ${company.email}`}</p>
-                                        <p>{`Contact No: ${company.companyContactNo}`}</p>
-                                        <p>{`Address: ${company.companyAddress}`}</p>
+                                        {/* <p>{`Contact No: ${company.companyContactNo}`}</p>
+                                        <p>{`Address: ${company.companyAddress}`}</p> */}
                                     </div>
                             )}})}
                         </Dialog>

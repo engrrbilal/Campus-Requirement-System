@@ -91,20 +91,7 @@ export const getCompaniesData = (test2={}) => {
           ...childSnapshot.val()
         });
       });
-      // let data = snapshot.val()
-      // for (var key in data) {
-      //   let obj = data[key];
-      // if(obj.value !== "Admin"){
-      //   console.log(obj.value)
-      //   // snapshot.forEach((childSnapshot) => {
-      //     compData.push({
-      //       id:key,
-      //       ...obj
-      //     });
-        // });
         dispatch(companiesData(compData))
-      // }
-    // }
     })
   };
 };
@@ -216,10 +203,7 @@ export const startJobApply = (jobData = {}) =>{
       jobPushKey='',
       createdAt=0
       } = jobData;
-      // const studentsData = {studentUid,createdAt,companyUid,jobPushKey}
-      //   firebase.auth().onAuthStateChanged((user) => {
-      //     if (user) {
-            firebase.database().ref(`/Students/${studentUid}/`).on('value', snap => {
+            firebase.database().ref(`/Students/${studentUid}/`).once('value').then((snap) => {
                 let data = snap.val()
                 let obj = {
                     fullName: data.fullName,

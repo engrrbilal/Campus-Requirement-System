@@ -243,7 +243,7 @@ class Company extends React.Component{
                         <MenuItem value='Intern' primaryText="Intern" />
                         <MenuItem value='Accountant' primaryText="Accountant" />
                         </SelectField><br/>
-                        <SelectField floatingLabelText="Education"
+                        <SelectField floatingLabelText="Experience"
                             value={this.state.salary}
                             onChange={(event, index, value) => this.setState({
                             salary:value

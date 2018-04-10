@@ -277,8 +277,8 @@ class Admin extends React.Component{
                                 return (<div>
                                     <p>{`Name: ${company.fullName}`}</p>
                                     <p>{`Email: ${company.email}`}</p>
-                                    <p>{`Contact No: ${company.companyContactNo}`}</p>
-                                    <p>{`Address: ${company.companyAddress}`}</p>
+                                    {/* <p>{`Contact No: ${company.companyContactNo}`}</p>
+                                    <p>{`Address: ${company.companyAddress}`}</p> */}
                                     <p>{`Registerd At: ${createdAt}`}</p>
                                     </div>
                             )}})}
