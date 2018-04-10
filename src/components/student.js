@@ -55,10 +55,10 @@ class Student extends React.Component{
             slideIndex: 0,
             disabled:true,
             fullName:'',
-            educationValue:'Bachelor',
-            experienceValue:'LessThanYear',
-            majorValue:'Programing',
-            studentGrade:'A',
+            educationValue:'Not added',
+            experienceValue:'Not added',
+            majorValue:'Not added',
+            studentGrade:'Not added',
             studentContactNo:0,
             update:false
 
@@ -95,19 +95,6 @@ class Student extends React.Component{
                   })
             }
             },500)
-            setTimeout(()=>{ 
-                if(this.props.student.educationValue && this.props.student.experienceValue && 
-                    this.props.student.majorValue && this.props.student.studentGrade && this.props.student.studentContactNo
-                ){
-                    this.setState({
-                        educationValue: this.props.student.educationValue,
-                        experienceValue: this.props.student.experienceValue,
-                        majorValue: this.props.student.majorValue,
-                        studentGrade: this.props.student.studentGrade,
-                        studentContactNo: this.props.student.studentContactNo
-                      })
-                }
-                },800)
             
     }
     componentWillReceiveProps(props){
@@ -115,6 +102,12 @@ class Student extends React.Component{
             this.setState({
                 fullName: props.student.fullName,
                 displayName:props.student.fullName,
+            })
+        }
+        if(props.student.educationValue || props.student.experienceValue ||  props.student.majorValue ||
+            props.student.studentGrade || props.student.studentContactNo
+        ){
+            this.setState({
                 educationValue: props.student.educationValue,
                 experienceValue: props.student.experienceValue,
                 majorValue: props.student.majorValue,
@@ -325,8 +318,6 @@ class Student extends React.Component{
                                 return (<div key={index}>
                                         <p>{`Name: ${company.fullName}`}</p>
                                         <p>{`Email: ${company.email}`}</p>
-                                        {/* <p>{`Contact No: ${company.companyContactNo}`}</p>
-                                        <p>{`Address: ${company.companyAddress}`}</p> */}
                                     </div>
                             )}})}
                         </Dialog>
@@ -355,7 +346,7 @@ class Student extends React.Component{
                                             <MenuItem value='Bachelor' primaryText="Bachelor" />
                                             <MenuItem value='Inter' primaryText="inter" />
                                             <MenuItem value='Matric' primaryText="Matric" />
-                                            <MenuItem value='<Matric' primaryText="<Matric" />
+                                            <MenuItem value='Not added' primaryText="Not added" />
                                             </SelectField>
                                             <br />
                                 <Divider />
@@ -374,6 +365,7 @@ class Student extends React.Component{
                                             <MenuItem value='Two year' primaryText="2 Year" />
                                             <MenuItem value='Three Year' primaryText="3 Year" />
                                             <MenuItem value='MoreThanThree' primaryText="3 Year >" />
+                                            <MenuItem value='Not added' primaryText="Not added" />
                                         </SelectField><br/>
                                         <Divider />
                                 <SelectField floatingLabelText="Major In"
@@ -388,6 +380,7 @@ class Student extends React.Component{
                                         <MenuItem value='Programing' primaryText="Programing" />
                                         <MenuItem value='Mathmatics' primaryText="Mathmatics" />
                                         <MenuItem value='Networking' primaryText="Networking" />
+                                        <MenuItem value='Not added' primaryText="Not added" />
                                         <MenuItem value='Other' primaryText="Other" />
                                         </SelectField>
                                         <Divider />
@@ -405,6 +398,7 @@ class Student extends React.Component{
                                         <MenuItem value='A' primaryText="A" />
                                         <MenuItem value='B' primaryText="B" />
                                         <MenuItem value='C' primaryText="C" />
+                                        <MenuItem value='Not added' primaryText="Not added" />
                                 </SelectField>
                                 <Divider></Divider>
                                         <TextField floatingLabelText="Contact No" type="number" value={this.state.studentContactNo} style={styles.style} underlineShow={false}
